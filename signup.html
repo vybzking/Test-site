@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration Portal</title>
+  <style>
+    /* Deep dark purple theme styling */
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #120524; /* Very deep dark purple */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #f3f0f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+    }
+
+    .form-container {
+      background-color: #220f3d; /* Rich purple card */
+      width: 100%;
+      max-width: 450px;
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #ffffff;
+      font-size: 24px;
+    }
+
+    p.subtitle {
+      color: #cbd5e1;
+      font-size: 14px;
+      margin-top: 0;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      background-color: #1a0933; /* Darker purple inputs */
+      border: 1px solid #4c2f75;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #ffffff;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input::placeholder {
+      color: #6b538c;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #9061f9; /* Purple glow */
+      box-shadow: 0 0 0 3px rgba(144, 97, 249, 0.25);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #7e3af2;
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover {
+      background-color: #6c2bd9;
+    }
+
+    .submit-btn:active {
+      background-color: #5b21b6;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .login-link a {
+      color: #9061f9;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Create Account</h2>
+    <p class="subtitle">Register to join the student performance portal.</p>
+
+    <form id="signup-form">
+      <!-- Full Name (For Firestore displayName) -->
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="e.g., Kwasi Mensah" required>
+      </div>
+
+      <!-- Email Address -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="e.g., kwasi@example.com" required>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Min 6 characters" minlength="6" required>
+      </div>
+
+      <button type="submit" class="submit-btn">Sign Up</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="index.html">Log in</a>
+    </div>
+  </div>
+
+  <!-- Load Firebase SDK Modules -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Replace with your exact Project Config keys from Project Settings
+    const firebaseConfig = {
+    apiKey: "AIzaSyCP8QucUl9sS_z5x7syJYJps8mAmocdjbo",
+    authDomain: "trial-project-33cbb.firebaseapp.com",
+    projectId: "trial-project-33cbb",
+    storageBucket: "trial-project-33cbb.firebasestorage.app",
+    messagingSenderId: "453484633595",
+    appId: "1:453484633595:web:2cc944c931387521fdff5e",
+    measurementId: "G-N9QJPYSGQM"
+  };
+
+    // Initialize Services
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Listen for form submission
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Gather input values
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        // Step 1: Create the user credential profile in Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        console.log("Auth account built successfully. UID assigned:", user.uid);
+
+        // Step 2: Write extended profile data into Firestore using Auth UID as the Document ID
+        await setDoc(doc(db, "users", user.uid), {
+          displayName: fullName,
+          email: email,
+          role: "student",          // Default role for standard registrants
+          isAccountActive: true,    // This ensures they show up in your score entry dropdown
+          createdAt: new Date()
+        });
+
+        alert(`Account successfully created for ${fullName}!`);
+        
+        // Step 3: Send them over to a landing page or student dashboard
+        // window.location.href = "student-dashboard.html";
+
+      } catch (error) {
+        console.error("Registration Error encountered:", error.code, error.message);
+        
+        // Friendly alerts for basic Firebase auth validation issues
+        if (error.code === 'auth/email-already-in-use') {
+          alert("Registration failed: This email address is already registered.");
+        } else {
+          alert(`Registration failed: ${error.message}`);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
