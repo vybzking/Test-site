@@ -4,22 +4,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WASSCE Score Entry Portal</title>
-  <link rel="stylesheet" href="scores-upload-styles.css">
-  
+  <style>
+    /* Deep dark purple theme styling */
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #120524;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #f3f0f7;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-container {
+      background-color: #220f3d;
+      width: 100%;
+      max-width: 600px;
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 25px;
+      color: #ffffff;
+      font-size: 24px;
+      border-bottom: 1px solid #3d2461;
+      padding-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px;
+      background-color: #1a0933;
+      border: 1px solid #4c2f75;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #ffffff;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    select:disabled {
+      background-color: #1f1430;
+      color: #75628c;
+      cursor: not-allowed;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #9061f9;
+      box-shadow: 0 0 0 3px rgba(144, 97, 249, 0.25);
+    }
+
+    .score-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+      padding: 15px;
+      background-color: rgba(26, 9, 51, 0.4);
+      border-radius: 8px;
+      border: 1px solid #3d2461;
+    }
+
+    .score-pair-title {
+      grid-column: span 2;
+      font-size: 14px;
+      font-weight: bold;
+      color: #9061f9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: -5px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #7e3af2;
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover {
+      background-color: #6c2bd9;
+    }
+  </style>
 </head>
 <body>
 
   <div class="form-container">
-    <h2>Student Performance Entry</h2>
+    <h2>WASSCE Student Performance Entry</h2>
 
     <form id="wassce-score-form">
-      <!-- Full Name -->
+      
+      <!-- Student Name Select Field (Populated by Firestore) -->
       <div class="form-group">
-        <label for="studentName">Student Full Name</label>
-        <input type="text" id="studentName" placeholder="e.g., Kwasi Mensah" required>
+        <label for="studentSelect">Select Active Student</label>
+        <select id="studentSelect" required disabled>
+          <option value="" disabled selected>Loading active students...</option>
+        </select>
       </div>
 
-      <!-- Ghanaian WASSCE Subjects selection -->
+      <!-- WASSCE Subjects selection -->
       <div class="form-group">
         <label for="subject">WASSCE Subject</label>
         <select id="subject" required>
@@ -30,7 +139,7 @@
             <option value="integrated_science">Integrated Science</option>
             <option value="social_studies">Social Studies</option>
           </optgroup>
-          <optgroup label="Electives (Science / Technical / General)">
+          <optgroup label="Electives">
             <option value="elective_math">Elective Mathematics</option>
             <option value="ict_elective">Information & Comm. Technology (ICT)</option>
             <option value="physics">Physics</option>
@@ -83,8 +192,132 @@
     </form>
   </div>
 
-  <script src="scores-upload-script.js" type="module">
-   
+  <!-- Load Firebase App, Firestore SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Your actual Firebase Project keys
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase Services
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const studentSelect = document.getElementById('studentSelect');
+
+    // 1. FETCH ACTIVE STUDENTS FROM FIRESTORE ON PAGE LOAD
+    async function loadActiveStudents() {
+      try {
+        // Point to the 'users' collection
+        const usersRef = collection(db, "users");
+        
+        // Query to filter where field 'isAccountActive' (or whatever flag you use) is true
+        const q = query(usersRef, where("isAccountActive", "==", true));
+        const querySnapshot = await getDocs(q);
+
+        // Clear the loading message
+        studentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
+
+        if (querySnapshot.empty) {
+          studentSelect.innerHTML = '<option value="" disabled>No active students found</option>';
+          return;
+        }
+
+        // Loop through Firestore records and build dropdown options
+        querySnapshot.forEach((doc) => {
+          const studentData = doc.data();
+          const option = document.createElement('option');
+          
+          // Use the unique Firestore document ID (UID) as the option value
+          option.value = doc.id; 
+          // Show the student's name to the administrator
+          option.textContent = studentData.displayName || "Unnamed Student";
+          
+          studentSelect.appendChild(option);
+        });
+
+        // Enable the input element now that data is loaded
+        studentSelect.disabled = false;
+
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        studentSelect.innerHTML = '<option value="" disabled>Failed to load students</option>';
+      }
+    }
+
+    // Trigger the fetch process immediately
+    loadActiveStudents();
+
+
+    // 2. SUBMIT COMPILED MARKS TO FIRESTORE
+    document.getElementById('wassce-score-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const studentUid = studentSelect.value;
+      // Get the readable name from the selected dropdown text alternative
+      const studentName = studentSelect.options[studentSelect.selectedIndex].text;
+      const subject = document.getElementById('subject').value;
+      
+      const objectivesScore = parseFloat(document.getElementById('objectives').value) || 0;
+      const objectivesTotal = parseFloat(document.getElementById('objectivesTotal').value) || 0;
+      
+      const theoryScore = parseFloat(document.getElementById('theory').value) || 0;
+      const theoryTotal = parseFloat(document.getElementById('theoryTotal').value) || 0;
+      
+      const practicalsScore = parseFloat(document.getElementById('practicals').value) || 0;
+      const practicalsTotal = parseFloat(document.getElementById('practicalsTotal').value) || 0;
+
+      if (objectivesScore > objectivesTotal || theoryScore > theoryTotal || practicalsScore > practicalsTotal) {
+        alert("Error: A student's score cannot exceed the Expected Total Marks.");
+        return;
+      }
+
+      const grandTotalObtained = objectivesScore + theoryScore + practicalsScore;
+      const grandTotalPossible = objectivesTotal + theoryTotal + practicalsTotal;
+      const calculatedPercentage = grandTotalPossible > 0 ? ((grandTotalObtained / grandTotalPossible) * 100).toFixed(2) : 0;
+
+      const assessmentPayload = {
+        studentUid,   // Links the score directly to their unique profile ID
+        studentName,
+        subject,
+        breakdown: {
+          objectives: { obtained: objectivesScore, possible: objectivesTotal },
+          theory: { obtained: theoryScore, possible: theoryTotal },
+          practicals: { obtained: practicalsScore, possible: practicalsTotal }
+        },
+        summary: {
+          totalObtained: grandTotalObtained,
+          totalPossible: grandTotalPossible,
+          percentage: calculatedPercentage + '%'
+        },
+        recordedAt: new Date()
+      };
+
+      try {
+        // Save into a new global collection called 'grades' or 'exam_records'
+        await addDoc(collection(db, "exam_records"), assessmentPayload);
+        
+        alert(`Performance record successfully uploaded for ${studentName}!`);
+        
+        // Reset scores for next input, keep the total benchmarks
+        studentSelect.selectedIndex = 0;
+        document.getElementById('objectives').value = '';
+        document.getElementById('theory').value = '';
+        document.getElementById('practicals').value = '0';
+
+      } catch (error) {
+        console.error("Error saving grades:", error);
+        alert("Failed to save grade record to database: " + error.message);
+      }
+    });
   </script>
 
 </body>
