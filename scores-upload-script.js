@@ -58,8 +58,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     }
 
     // Trigger the fetch process immediately
-    loadActiveStudents();
-
+    onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    console.log("Logged in user verified:", user.uid);
+    // Token is safely loaded and attached! Now it's safe to fetch the students
+    await loadActiveStudents();
+  } else {
+    console.log("No token found. Booting back to login...");
+    window.location.href = "index.html";
+  }
+});
 
     // 2. SUBMIT COMPILED MARKS TO FIRESTORE
     document.getElementById('wassce-score-form').addEventListener('submit', async (e) => {
