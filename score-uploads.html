@@ -255,7 +255,7 @@
     }
 
     // Trigger the fetch process immediately
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(getAuth(app), async (user) => {
   if (user) {
     console.log("Logged in user verified:", user.uid);
     // Token is safely loaded and attached! Now it's safe to fetch the students
