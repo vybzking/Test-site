@@ -298,16 +298,15 @@ document.getElementById('wassce-score-form').addEventListener('submit', async (e
     studentUid: studentUid,
     studentName: studentName,
     subject: subject,
-    objectivesObtained: objectivesObtained,
-    objectivesPossible: objectivesPossible,
-    theoryObtained: theoryObtained,
-    theoryPossible: theoryPossible,
-    practicalsObtained: practicalsObtained,
-    practicalsPossible: practicalsPossible,
-    totalObtained: totalObtained,
-    totalPossible: totalPossible,
-    percentage: percentage, // Now saved as a pure number (e.g. 78.5) for easier math filters
-    recordedBy: currentTeacherUid,
+    objectivesObtained: objectivesScore,
+    objectivesPossible: objectivesTotal,
+    theoryObtained: theoryScore,
+    theoryPossible: theoryTotal,
+    practicalsObtained: practicalsScore,
+    practicalsPossible: practicalsTotal,
+    totalObtained: grandTotalObtained,
+    totalPossible: grandTotalPossible,
+    percentage: calculatedPercentage, // Now saved as a pure number (e.g. 78.5) for easier math filters
     recordedAt: new Date()
   };
 
