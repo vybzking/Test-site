@@ -267,66 +267,66 @@
 });
 
     // 2. SUBMIT COMPILED MARKS TO FIRESTORE
-    document.getElementById('wassce-score-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    // Inside your 'submit' event listener on score-uploads.html:
+document.getElementById('your-form-id').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      const studentUid = studentSelect.value;
-      // Get the readable name from the selected dropdown text alternative
-      const studentName = studentSelect.options[studentSelect.selectedIndex].text;
-      const subject = document.getElementById('subject').value;
-      
-      const objectivesScore = parseFloat(document.getElementById('objectives').value) || 0;
-      const objectivesTotal = parseFloat(document.getElementById('objectivesTotal').value) || 0;
-      
-      const theoryScore = parseFloat(document.getElementById('theory').value) || 0;
-      const theoryTotal = parseFloat(document.getElementById('theoryTotal').value) || 0;
-      
-      const practicalsScore = parseFloat(document.getElementById('practicals').value) || 0;
-      const practicalsTotal = parseFloat(document.getElementById('practicalsTotal').value) || 0;
+  const studentSelect = document.getElementById('studentSelect');
+  
+  // 1. Gather values and explicitly convert inputs to raw base-10 numbers
+  const studentUid = studentSelect.value || "";
+  const studentName = studentSelect.options[studentSelect.selectedIndex]?.text || "Unknown Student";
+  const subject = document.getElementById('subject').value || "General";
 
-      if (objectivesScore > objectivesTotal || theoryScore > theoryTotal || practicalsScore > practicalsTotal) {
-        alert("Error: A student's score cannot exceed the Expected Total Marks.");
-        return;
-      }
+  // Force numeric types with fallback values to protect against NaN / undefined strings
+  const objectivesScore = parseInt(document.getElementById('objectivesScore').value, 10) || 0;
+  const objectivesTotal = parseInt(document.getElementById('objectivesTotal').value, 10) || 60;
+  
+  const theoryScore = parseInt(document.getElementById('theoryScore').value, 10) || 0;
+  const theoryTotal = parseInt(document.getElementById('theoryTotal').value, 10) || 100;
+  
+  const practicalsScore = parseInt(document.getElementById('practicalsScore').value, 10) || 0;
+  const practicalsTotal = parseInt(document.getElementById('practicalsTotal').value, 10) || 100;
 
-      const grandTotalObtained = objectivesScore + theoryScore + practicalsScore;
-      const grandTotalPossible = objectivesTotal + theoryTotal + practicalsTotal;
-      const calculatedPercentage = grandTotalPossible > 0 ? ((grandTotalObtained / grandTotalPossible) * 100).toFixed(2) : 0;
+  // 2. Math Calculations
+  const grandTotalObtained = objectivesScore + theoryScore + practicalsScore;
+  const grandTotalPossible = objectivesTotal + theoryTotal + practicalsTotal;
+  const calculatedPercentage = grandTotalPossible > 0 ? ((grandTotalObtained / grandTotalPossible) * 100).toFixed(1) : "0.0";
 
-      const assessmentPayload = {
-        studentUid,   // Links the score directly to their unique profile ID
-        studentName,
-        subject,
-        breakdown: {
-          objectives: { obtained: objectivesScore, possible: objectivesTotal },
-          theory: { obtained: theoryScore, possible: theoryTotal },
-          practicals: { obtained: practicalsScore, possible: practicalsTotal }
-        },
-        summary: {
-          totalObtained: grandTotalObtained,
-          totalPossible: grandTotalPossible,
-          percentage: calculatedPercentage + '%'
-        },
-        recordedAt: new Date()
-      };
+  // 3. Construct clean, production-ready payload data free of undefined keys
+  const assessmentPayload = {
+    studentUid: String(studentUid), 
+    studentName: String(studentName),
+    subject: String(subject),
+    breakdown: {
+      objectives: { obtained: Number(objectivesScore), possible: Number(objectivesTotal) },
+      theory: { obtained: Number(theoryScore), possible: Number(theoryTotal) },
+      practicals: { obtained: Number(practicalsScore), possible: Number(practicalsTotal) }
+    },
+    summary: {
+      totalObtained: Number(grandTotalObtained),
+      totalPossible: Number(grandTotalPossible),
+      percentage: calculatedPercentage + '%'
+    },
+    recordedAt: new Date() // Standard native JS Date object is fully recognized by Firestore
+  };
 
-      try {
-        // Save into a new global collection called 'grades' or 'exam_records'
-        await addDoc(collection(db, "exam_records"), assessmentPayload);
-        
-        alert(`Performance record successfully uploaded for ${studentName}!`);
-        
-        // Reset scores for next input, keep the total benchmarks
-        studentSelect.selectedIndex = 0;
-        document.getElementById('objectives').value = '';
-        document.getElementById('theory').value = '';
-        document.getElementById('practicals').value = '0';
+  console.log("Submitting sanitized payload payload down to Firestore:", assessmentPayload);
 
-      } catch (error) {
-        console.error("Error saving grades:", error);
-        alert("Failed to save grade record to database: " + error.message);
-      }
-    });
+  try {
+    // Import collection and addDoc from firestore wrapper module
+    const { collection, addDoc, getFirestore } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const db = getFirestore();
+    
+    const docRef = await addDoc(collection(db, "exam_records"), assessmentPayload);
+    console.log("Document successfully written with ID:", docRef.id);
+    alert("Grade record saved successfully!");
+    
+  } catch (error) {
+    console.error("Submission failed completely:", error);
+    alert(`Failed to save record: ${error.message}`);
+  }
+});
   </script>
 
 </body>
