@@ -279,13 +279,13 @@ document.getElementById('wassce-score-form').addEventListener('submit', async (e
   const subject = document.getElementById('subject').value || "General";
 
   // Force numeric types with fallback values to protect against NaN / undefined strings
-  const objectivesScore = parseInt(document.getElementById('objectivesScore').value, 10) || 0;
+  const objectivesScore = parseInt(document.getElementById('objectives').value, 10) || 0;
   const objectivesTotal = parseInt(document.getElementById('objectivesTotal').value, 10) || 60;
   
-  const theoryScore = parseInt(document.getElementById('theoryScore').value, 10) || 0;
+  const theoryScore = parseInt(document.getElementById('theory').value, 10) || 0;
   const theoryTotal = parseInt(document.getElementById('theoryTotal').value, 10) || 100;
   
-  const practicalsScore = parseInt(document.getElementById('practicalsScore').value, 10) || 0;
+  const practicalsScore = parseInt(document.getElementById('practicals').value, 10) || 0;
   const practicalsTotal = parseInt(document.getElementById('practicalsTotal').value, 10) || 100;
 
   // 2. Math Calculations
