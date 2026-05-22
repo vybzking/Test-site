@@ -295,20 +295,20 @@ document.getElementById('wassce-score-form').addEventListener('submit', async (e
 
   // 3. Construct clean, production-ready payload data free of undefined keys
   const assessmentPayload = {
-    studentUid: String(studentUid), 
-    studentName: String(studentName),
-    subject: String(subject),
-    breakdown: {
-      objectives: { obtained: Number(objectivesScore), possible: Number(objectivesTotal) },
-      theory: { obtained: Number(theoryScore), possible: Number(theoryTotal) },
-      practicals: { obtained: Number(practicalsScore), possible: Number(practicalsTotal) }
-    },
-    summary: {
-      totalObtained: Number(grandTotalObtained),
-      totalPossible: Number(grandTotalPossible),
-      percentage: calculatedPercentage + '%'
-    },
-    recordedAt: new Date() // Standard native JS Date object is fully recognized by Firestore
+    studentUid: studentUid,
+    studentName: studentName,
+    subject: subject,
+    objectivesObtained: objectivesObtained,
+    objectivesPossible: objectivesPossible,
+    theoryObtained: theoryObtained,
+    theoryPossible: theoryPossible,
+    practicalsObtained: practicalsObtained,
+    practicalsPossible: practicalsPossible,
+    totalObtained: totalObtained,
+    totalPossible: totalPossible,
+    percentage: percentage, // Now saved as a pure number (e.g. 78.5) for easier math filters
+    recordedBy: currentTeacherUid,
+    recordedAt: new Date()
   };
 
   console.log("Submitting sanitized payload payload down to Firestore:", assessmentPayload);
