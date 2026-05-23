@@ -315,9 +315,9 @@ document.getElementById('wassce-score-form').addEventListener('submit', async (e
   try {
     // Import collection and addDoc from firestore wrapper module
     const { collection, addDoc, getFirestore } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-    const db = getFirestore();
+  
     
-    const docRef = await addDoc(collection(db, "exam_records"), assessmentPayload);
+    const docRef = await addDoc(collection(db, "exams"), assessmentPayload);
     console.log("Document successfully written with ID:", docRef.id);
     alert("Grade record saved successfully!");
     
