@@ -195,7 +195,7 @@
   <!-- Load Firebase App, Firestore SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, doc , serverTimestamp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     // Your actual Firebase Project keys
     const firebaseConfig = {
@@ -294,38 +294,66 @@ document.getElementById('wassce-score-form').addEventListener('submit', async (e
   const calculatedPercentage = grandTotalPossible > 0 ? ((grandTotalObtained / grandTotalPossible) * 100).toFixed(1) : "0.0";
 
   // 3. Construct clean, production-ready payload data free of undefined keys
-  const assessmentPayload = {
-    studentUid: studentUid,
-    studentName: studentName,
-    subject: subject,
-    objectivesObtained: objectivesScore,
-    objectivesPossible: objectivesTotal,
-    theoryObtained: theoryScore,
-    theoryPossible: theoryTotal,
-    practicalsObtained: practicalsScore,
-    practicalsPossible: practicalsTotal,
-    totalObtained: grandTotalObtained,
-    totalPossible: grandTotalPossible,
-    percentage: calculatedPercentage, // Now saved as a pure number (e.g. 78.5) for easier math filters
-    recordedAt: new Date()
-  };
-
-  console.log("Submitting sanitized payload payload down to Firestore:", assessmentPayload);
-
+  async function saveStudentAssessment(
+  termId,
+  studentUid,
+  studentName,
+  subject,
+  objectivesScore,
+  objectivesTotal,
+  theoryScore,
+  theoryTotal,
+  practicalsScore,
+  practicalsTotal,
+  grandTotalObtained,
+  grandTotalPossible,
+  calculatedPercentage
+) {
   try {
-    // Import collection and addDoc from firestore wrapper module
-    const { collection, addDoc, getFirestore } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-  
+    // 2. CONSTRUCT YOUR EXACT PAYLOAD WITH FORMATTING FIXES
+    // Number() guarantees data types don't get saved as strings by accident.
+    const assessmentPayload = {
+      studentUid: studentUid,
+      studentName: studentName,
+      subject: subject.toLowerCase().trim(), // "Math" becomes "math" for clean URLs
+      objectivesObtained: Number(objectivesScore || 0),
+      objectivesPossible: Number(objectivesTotal || 0),
+      theoryObtained: Number(theoryScore || 0),
+      theoryPossible: Number(theoryTotal || 0),
+      practicalsObtained: Number(practicalsScore || 0),
+      practicalsPossible: Number(practicalsTotal || 0),
+      totalObtained: Number(grandTotalObtained || 0),
+      totalPossible: Number(grandTotalPossible || 0),
+      percentage: Number(calculatedPercentage || 0), 
+      
+      // Upgraded to Firestore server timestamp to avoid user device clock errors
+      recordedAt: serverTimestamp() 
+    };
+
+    // 3. DEFINE THE NESTED PATH USING YOUR ROADMAP STRINGS
+    // Path: students/[studentUid]/terms/[termId]/subjects/[subjectId]
+    const subjectId = assessmentPayload.subject; 
     
-    const docRef = await addDoc(doc(db, "exams", studentUid), assessmentPayload);
-    console.log("Document successfully written with ID:", docRef.id);
-    alert("Grade record saved successfully!");
+    const docRef = doc(
+      db, 
+      "students", studentUid, 
+      "terms", termId, 
+      "subjects", subjectId
+    );
+
+    // 4. WRITE SAFELY TO FIRESTORE
+    // { merge: true } prevents erasing existing terms or subjects.
+    await setDoc(docRef, assessmentPayload, { merge: true });
     
+    alert(`✅ Assessment saved! Path: students/${studentUid}/terms/${termId}/subjects/${subjectId}`);
+    return { success: true };
+
   } catch (error) {
-    console.error("Submission failed completely:", error);
-    alert(`Failed to save record: ${error.message}`);
+    alert("❌ Firestore Save Operation Failed:", error);
+    throw error;
   }
-});
+}
+  
   </script>
 
 </body>
