@@ -235,6 +235,7 @@
         // Loop through Firestore records and build dropdown options
         querySnapshot.forEach((doc) => {
           const studentData = doc.data();
+          alert(studentData);
           const option = document.createElement('option');
           
           // Use the unique Firestore document ID (UID) as the option value
