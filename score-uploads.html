@@ -221,7 +221,7 @@
         const usersRef = collection(db, "users");
         
         // Query to filter where field 'isAccountActive' (or whatever flag you use) is true
-        const q = query(usersRef, where("isAccountActive", "==", true) && where("role", "==", "student"));
+        const q = query(usersRef, where("isAccountActive", "==", true) ;
         const querySnapshot = await getDocs(q);
         alert(querySnapshot);
         // Clear the loading message
