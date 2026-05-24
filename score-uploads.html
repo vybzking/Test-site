@@ -221,7 +221,7 @@
         const usersRef = collection(db, "users");
         
         // Query to filter where field 'isAccountActive' (or whatever flag you use) is true
-        const q = query(usersRef, where("isAccountActive", "==", true));
+        const q = query(usersRef, where("isAccountActive", "==", true) && where("role", "==", "student"));
         const querySnapshot = await getDocs(q);
 
         // Clear the loading message
@@ -262,7 +262,7 @@
     await loadActiveStudents();
   } else {
     console.log("No token found. Booting back to login...");
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   }
 });
 
@@ -317,7 +317,7 @@ document.getElementById('wassce-score-form').addEventListener('submit', async (e
     const { collection, addDoc, getFirestore } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
   
     
-    const docRef = await addDoc(collection(db, "exams"), assessmentPayload);
+    const docRef = await addDoc(doc(db, "exams", studentUid), assessmentPayload);
     console.log("Document successfully written with ID:", docRef.id);
     alert("Grade record saved successfully!");
     
