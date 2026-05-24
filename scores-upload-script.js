@@ -130,3 +130,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         alert("Failed to save grade record to database: " + error.message);
       }
     });
+
+async function sinup(){
+
+}
