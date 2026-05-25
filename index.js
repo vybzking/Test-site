@@ -318,45 +318,45 @@ async function uploads(){
 }
   
 
-async function loadActiveStudents() {
-    try {
-        // Point to the 'users' collection
-        const usersRef = collection(db, "users");
+// async function loadActiveStudents() {
+//     try {
+//         // Point to the 'users' collection
+//         const usersRef = collection(db, "users");
         
-        // Query to filter where field 'isAccountActive' (or whatever flag you use) is true
-        const q = query(usersRef, where("isAccountActive", "==", true) && where("role", "==", "student"));
-        const querySnapshot = await getDocs(q);
-        alert(querySnapshot);
-        // Clear the loading message
-        studentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
+//         // Query to filter where field 'isAccountActive' (or whatever flag you use) is true
+//         const q = query(usersRef, where("isAccountActive", "==", true) && where("role", "==", "student"));
+//         const querySnapshot = await getDocs(q);
+//         alert(querySnapshot);
+//         // Clear the loading message
+//         studentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
 
-        if (querySnapshot.empty) {
-          studentSelect.innerHTML = '<option value="" disabled>No active students found</option>';
-          return;
-        }
+//         if (querySnapshot.empty) {
+//           studentSelect.innerHTML = '<option value="" disabled>No active students found</option>';
+//           return;
+//         }
 
-        // Loop through Firestore records and build dropdown options
-        querySnapshot.forEach((doc) => {
-          const studentData = doc.data();
-          alert(studentData);
-          const option = document.createElement('option');
+//         // Loop through Firestore records and build dropdown options
+//         querySnapshot.forEach((doc) => {
+//           const studentData = doc.data();
+//           alert(studentData);
+//           const option = document.createElement('option');
           
-          // Use the unique Firestore document ID (UID) as the option value
-          option.value = doc.id; 
-          // Show the student's name to the administrator
-          option.textContent = studentData.displayName || "Unnamed Student";
+//           // Use the unique Firestore document ID (UID) as the option value
+//           option.value = doc.id; 
+//           // Show the student's name to the administrator
+//           option.textContent = studentData.displayName || "Unnamed Student";
           
-          studentSelect.appendChild(option);
-        });
+//           studentSelect.appendChild(option);
+//         });
 
-        // Enable the input element now that data is loaded
-        studentSelect.disabled = false;
+//         // Enable the input element now that data is loaded
+//         studentSelect.disabled = false;
 
-      } catch (error) {
-        console.error("Error fetching students:", error);
-        studentSelect.innerHTML = '<option value="" disabled>Failed to load students</option>';
-      }
-    }
+//       } catch (error) {
+//         console.error("Error fetching students:", error);
+//         studentSelect.innerHTML = '<option value="" disabled>Failed to load students</option>';
+//       }
+//     }
 
     // Trigger the fetch process immediately
  onAuthStateChanged(getAuth(app), async (user) => {
