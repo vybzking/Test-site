@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { onAuthChange } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     // Your actual Firebase Project keys
     const firebaseConfig = {
     apiKey: "AIzaSyCP8QucUl9sS_z5x7syJYJps8mAmocdjbo",
