@@ -219,6 +219,154 @@ async function login(){
     
 }
 
+
+
+
+// 3. Construct clean, production-ready payload data free of undefined keys
+  async function saveStudentAssessment(
+  termId,
+  studentUid,
+  studentName,
+  subject,
+  objectivesScore,
+  objectivesTotal,
+  theoryScore,
+  theoryTotal,
+  practicalsScore,
+  practicalsTotal,
+  grandTotalObtained,
+  grandTotalPossible,
+  calculatedPercentage
+) {
+  try {
+    // 2. CONSTRUCT YOUR EXACT PAYLOAD WITH FORMATTING FIXES
+    // Number() guarantees data types don't get saved as strings by accident.
+    const assessmentPayload = {
+      studentUid: studentUid,
+      studentName: studentName,
+      subject: subject.toLowerCase().trim(), // "Math" becomes "math" for clean URLs
+      objectivesObtained: Number(objectivesScore || 0),
+      objectivesPossible: Number(objectivesTotal || 0),
+      theoryObtained: Number(theoryScore || 0),
+      theoryPossible: Number(theoryTotal || 0),
+      practicalsObtained: Number(practicalsScore || 0),
+      practicalsPossible: Number(practicalsTotal || 0),
+      totalObtained: Number(grandTotalObtained || 0),
+      totalPossible: Number(grandTotalPossible || 0),
+      percentage: Number(calculatedPercentage || 0), 
+      
+      // Upgraded to Firestore server timestamp to avoid user device clock errors
+      recordedAt: serverTimestamp() 
+    };
+
+    // 3. DEFINE THE NESTED PATH USING YOUR ROADMAP STRINGS
+    // Path: students/[studentUid]/terms/[termId]/subjects/[subjectId]
+    const subjectId = assessmentPayload.subject; 
+    
+    const docRef = doc(
+      db, 
+      "students", studentUid, 
+      "terms", termId, 
+      "subjects", subjectId
+    );
+
+    // 4. WRITE SAFELY TO FIRESTORE
+    // { merge: true } prevents erasing existing terms or subjects.
+    await setDoc(docRef, assessmentPayload, { merge: true });
+    
+    alert(`✅ Assessment saved! Path: students/${studentUid}/terms/${termId}/subjects/${subjectId}`);
+    return { success: true };
+
+  } catch (error) {
+    alert("❌ Firestore Save Operation Failed:", error);
+    throw error;
+  }
+}
+
+
+
 async function uploads(){
      
+    const studentSelect = document.getElementById('studentSelect');
+
+    // 1. FETCH ACTIVE STUDENTS FROM FIRESTORE ON PAGE LOAD
+    
+    // 2. SUBMIT COMPILED MARKS TO FIRESTORE
+    // Inside your 'submit' event listener on score-uploads.html:
+
+      const studentSelect = document.getElementById('studentSelect');
+  
+      // 1. Gather values and explicitly convert inputs to raw base-10 numbers
+      const studentUid = studentSelect.value || "";
+      const studentName = studentSelect.options[studentSelect.selectedIndex]?.text || "Unknown Student";
+      const subject = document.getElementById('subject').value || "General";
+
+      // Force numeric types with fallback values to protect against NaN / undefined strings
+      const objectivesScore = parseInt(document.getElementById('objectives').value, 10) || 0;
+      const objectivesTotal = parseInt(document.getElementById('objectivesTotal').value, 10) || 60;
+  
+      const theoryScore = parseInt(document.getElementById('theory').value, 10) || 0;
+      const theoryTotal = parseInt(document.getElementById('theoryTotal').value, 10) || 100;
+  
+      const practicalsScore = parseInt(document.getElementById('practicals').value, 10) || 0;
+      const practicalsTotal = parseInt(document.getElementById('practicalsTotal').value, 10) || 100;
+
+      // 2. Math Calculations
+      const grandTotalObtained = objectivesScore + theoryScore + practicalsScore;
+      const grandTotalPossible = objectivesTotal + theoryTotal + practicalsTotal;
+      const calculatedPercentage = grandTotalPossible > 0 ? ((grandTotalObtained / grandTotalPossible) * 100).toFixed(1) : "0.0";
 }
+  
+
+async function loadActiveStudents() {
+    try {
+        // Point to the 'users' collection
+        const usersRef = collection(db, "users");
+        
+        // Query to filter where field 'isAccountActive' (or whatever flag you use) is true
+        const q = query(usersRef, where("isAccountActive", "==", true) && where("role", "==", "student"));
+        const querySnapshot = await getDocs(q);
+        alert(querySnapshot);
+        // Clear the loading message
+        studentSelect.innerHTML = '<option value="" disabled selected>Choose a student...</option>';
+
+        if (querySnapshot.empty) {
+          studentSelect.innerHTML = '<option value="" disabled>No active students found</option>';
+          return;
+        }
+
+        // Loop through Firestore records and build dropdown options
+        querySnapshot.forEach((doc) => {
+          const studentData = doc.data();
+          alert(studentData);
+          const option = document.createElement('option');
+          
+          // Use the unique Firestore document ID (UID) as the option value
+          option.value = doc.id; 
+          // Show the student's name to the administrator
+          option.textContent = studentData.displayName || "Unnamed Student";
+          
+          studentSelect.appendChild(option);
+        });
+
+        // Enable the input element now that data is loaded
+        studentSelect.disabled = false;
+
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        studentSelect.innerHTML = '<option value="" disabled>Failed to load students</option>';
+      }
+    }
+
+    // Trigger the fetch process immediately
+ onAuthStateChanged(getAuth(app), async (user) => {
+  if (user) {
+    console.log("Logged in user verified:", user.uid);
+    // Token is safely loaded and attached! Now it's safe to fetch the students
+    await loadActiveStudents();
+  } else {
+    console.log("No token found. Booting back to login...");
+    window.location.href = "login.html";
+  }
+});
+
