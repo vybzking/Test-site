@@ -112,7 +112,7 @@ if (wassceForm) {
     const studentUid = studentSelect.value || "";
     const studentName = studentSelect.options[studentSelect.selectedIndex]?.text || "Unknown Student";
     const subject = document.getElementById('subject').value || "General";
-    const term = document.getElementById('term').value || "";
+    const term = document.getElementById('terms').value || "";
     const class_form = document.getElementById('forms').value || "";
 
     const objectivesScore = parseInt(document.getElementById('objectives').value, 10) || 0;
