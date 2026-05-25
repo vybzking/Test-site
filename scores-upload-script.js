@@ -24,7 +24,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         const usersRef = collection(db, "users");
         
         // Query to filter where field 'isAccountActive' (or whatever flag you use) is true
-        const q = query(usersRef, where("isAccountActive", "==", true));
+        const q = query(usersRef, where("isAccountActive", "==", true) && where("role", "==", "student"));
         const querySnapshot = await getDocs(q);
 
         // Clear the loading message
@@ -65,7 +65,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     await loadActiveStudents();
   } else {
     console.log("No token found. Booting back to login...");
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   }
 });
 
