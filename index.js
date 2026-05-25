@@ -146,7 +146,8 @@ if (wassceForm) {
       totalObtained: Number(grandTotalObtained),
       totalPossible: Number(grandTotalPossible),
       percentage: Number(calculatedPercentage), 
-      recordedAt: serverTimestamp() 
+      recordedAt: serverTimestamp(),
+      recorded_by: auth.currentUser.uid
     };
 
     await saveStudentAssessment(assessmentPayload);
