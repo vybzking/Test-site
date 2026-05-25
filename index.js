@@ -294,7 +294,7 @@ async function uploads(){
     // 2. SUBMIT COMPILED MARKS TO FIRESTORE
     // Inside your 'submit' event listener on score-uploads.html:
 
-      const studentSelect = document.getElementById('studentSelect');
+      // const studentSelect = document.getElementById('studentSelect');
   
       // 1. Gather values and explicitly convert inputs to raw base-10 numbers
       const studentUid = studentSelect.value || "";
