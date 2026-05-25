@@ -173,5 +173,48 @@ async function sinup(){
 }
 
 async function login(){
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        // Step 1: Sign the user in via Firebase Authentication
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        console.log("Authenticated successfully. Fetching user database role...");
+
+        // Step 2: Fetch their user profile document from Firestore to read their role
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          
+          // Step 3: Check permissions. Only teachers should access the score entry page.
+          if (userData.role === "teacher") {
+            alert(`Welcome back, Instructor ${userData.displayName || ''}!`);
+            
+            // Redirect straight to your score uploading page
+            window.location.href = "score-uploads.html"; 
+          } else {
+            // It's a student trying to access the upload portal! Kick them out.
+            alert("Access Denied: This portal is reserved for teachers and administrators only.");
+            await auth.signOut(); // Immediately terminate their session
+          }
+        } else {
+          alert("Login error: Your user profile document was not found in the database.");
+          await auth.signOut();
+        }
+
+      } catch (error) {
+        console.error("Login Error encountered:", error.code, error.message);
+        
+        // Handle typical authentication failures gracefully
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          alert("Login failed: Incorrect email address or password.");
+        } else {
+          alert(`Login failed: ${error.message}`);
+        }
+      }
     
 }
