@@ -132,5 +132,46 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     });
 
 async function sinup(){
+    
+      // Gather input values
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
+      try {
+        // Step 1: Create the user credential profile in Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        console.log("Auth account built successfully. UID assigned:", user.uid);
+
+        // Step 2: Write extended profile data into Firestore using Auth UID as the Document ID
+        await setDoc(doc(db, "users", user.uid), {
+          displayName: fullName,
+          email: email,
+          role: "student",          // Default role for standard registrants
+          isAccountActive: true,    // This ensures they show up in your score entry dropdown
+          createdAt: new Date()
+        });
+
+        alert(`Account successfully created for ${fullName}!`);
+        
+        // Step 3: Send them over to a landing page or student dashboard
+        // window.location.href = "student-dashboard.html";
+
+      } catch (error) {
+        console.error("Registration Error encountered:", error.code, error.message);
+        
+        // Friendly alerts for basic Firebase auth validation issues
+        if (error.code === 'auth/email-already-in-use') {
+          alert("Registration failed: This email address is already registered.");
+        } else {
+          alert(`Registration failed: ${error.message}`);
+        }
+      }
+    
+}
+
+async function login(){
+    
 }
