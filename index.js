@@ -225,10 +225,11 @@ async function login(){
 
 // 3. Construct clean, production-ready payload data free of undefined keys
   async function saveStudentAssessment(
-  termId,
+  term,
   studentUid,
   studentName,
   subject,
+  form,
   objectivesScore,
   objectivesTotal,
   theoryScore,
@@ -245,6 +246,8 @@ async function login(){
     const assessmentPayload = {
       studentUid: studentUid,
       studentName: studentName,
+      term: term,
+      form: form || "",
       subject: subject.toLowerCase().trim(), // "Math" becomes "math" for clean URLs
       objectivesObtained: Number(objectivesScore || 0),
       objectivesPossible: Number(objectivesTotal || 0),
@@ -262,19 +265,11 @@ async function login(){
 
     // 3. DEFINE THE NESTED PATH USING YOUR ROADMAP STRINGS
     // Path: students/[studentUid]/terms/[termId]/subjects/[subjectId]
-    const subjectId = assessmentPayload.subject; 
+    // const subject = assessmentPayload.subject;  
     
-    const docRef = doc(
-      db, 
-      "students", studentUid, 
-      "terms", termId, 
-      "subjects", subjectId
-    );
-
-    // 4. WRITE SAFELY TO FIRESTORE
-    // { merge: true } prevents erasing existing terms or subjects.
-    await setDoc(docRef, assessmentPayload, { merge: true });
-    
+    const newScoreRef = collection(db, "exams_scores");
+    const newScore = await addDoc(newScoreRef, assessmentPayload);
+   
     alert(`✅ Assessment saved! Path: students/${studentUid}/terms/${termId}/subjects/${subjectId}`);
     return { success: true };
 
@@ -316,6 +311,21 @@ async function uploads(){
       const grandTotalObtained = objectivesScore + theoryScore + practicalsScore;
       const grandTotalPossible = objectivesTotal + theoryTotal + practicalsTotal;
       const calculatedPercentage = grandTotalPossible > 0 ? ((grandTotalObtained / grandTotalPossible) * 100).toFixed(1) : "0.0";
+
+    saveStudentAssessment(
+    StudentUid, 
+    studentName,
+    subject,
+    objectivesScore,
+    objectivesTotal,
+    theoryScore,
+    theoryTotal,
+    practicalsScore,
+    practicalsTotal,
+    grandTotalObtained,
+    grandTotalPossible,
+    calculatedPercentage);
+
 }
   
 
