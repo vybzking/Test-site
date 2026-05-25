@@ -296,6 +296,10 @@ async function uploads(){
       const studentUid = studentSelect.value || "";
       const studentName = studentSelect.options[studentSelect.selectedIndex]?.text || "Unknown Student";
       const subject = document.getElementById('subject').value || "General";
+      const term = document.getElementById('term').value;
+      const class_form = document.getElementById('forms').value || "";
+
+
 
       // Force numeric types with fallback values to protect against NaN / undefined strings
       const objectivesScore = parseInt(document.getElementById('objectives').value, 10) || 0;
@@ -313,18 +317,20 @@ async function uploads(){
       const calculatedPercentage = grandTotalPossible > 0 ? ((grandTotalObtained / grandTotalPossible) * 100).toFixed(1) : "0.0";
 
     saveStudentAssessment(
-    StudentUid, 
-    studentName,
-    subject,
-    objectivesScore,
-    objectivesTotal,
-    theoryScore,
-    theoryTotal,
-    practicalsScore,
-    practicalsTotal,
-    grandTotalObtained,
-    grandTotalPossible,
-    calculatedPercentage);
+    term,
+  studentUid,
+  studentName,
+  subject,
+  class_form,
+  objectivesScore,
+  objectivesTotal,
+  theoryScore,
+  theoryTotal,
+  practicalsScore,
+  practicalsTotal,
+  grandTotalObtained,
+  grandTotalPossible,
+  calculatedPercentage);
 
 }
   
