@@ -14,6 +14,7 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
     // Initialize Firebase Services
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
     const studentSelect = document.getElementById('studentSelect');
 
