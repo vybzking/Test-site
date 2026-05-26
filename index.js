@@ -94,7 +94,8 @@ onAuthStateChanged(auth, async (user) => {
 async function saveStudentAssessment(payload) {
   try {
     const newScoreRef = collection(db, "exams_scores");
-    await addDoc(newScoreRef, payload);
+    const customDocId = `${payload.studentUid}_${payload.form}_${payload.term}_${payload.subject}`;
+    await setDoc(newScoreRef, payload);
     
     alert(`✅ Assessment successfully uploaded into root 'exams_scores' for ${payload.studentName}!`);
     return { success: true };
