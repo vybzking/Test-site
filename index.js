@@ -116,11 +116,11 @@ if (wassceForm) {
     const class_form = document.getElementById('forms').value || "";
 
     const objectivesScore = parseInt(document.getElementById('objectives').value, 10) || 0;
-    const objectivesTotal = parseInt(document.getElementById('objectivesTotal').value, 10) || 60;
+    const objectivesTotal = parseInt(document.getElementById('objectivesTotal').value, 10) ||50;
     const theoryScore = parseInt(document.getElementById('theory').value, 10) || 0;
-    const theoryTotal = parseInt(document.getElementById('theoryTotal').value, 10) || 100;
+    const theoryTotal = parseInt(document.getElementById('theoryTotal').value, 10) || 50;
     const practicalsScore = parseInt(document.getElementById('practicals').value, 10) || 0;
-    const practicalsTotal = parseInt(document.getElementById('practicalsTotal').value, 10) || 100;
+    const practicalsTotal = parseInt(document.getElementById('practicalsTotal').value, 10) || 0;
 
     if (objectivesScore > objectivesTotal || theoryScore > theoryTotal || practicalsScore > practicalsTotal) {
       alert("Error: A student's score cannot exceed the Expected Total Marks.");
