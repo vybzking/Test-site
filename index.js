@@ -95,8 +95,8 @@ async function saveStudentAssessment(payload) {
   try {
     const customDocId = `${payload.studentUid}_${payload.form}_${payload.term}_${payload.subject}`;
     alert(customDocId);
-    // const newScoreRef = doc(db, "exams_scores", customDocId);
-    // await setDoc(newScoreRef, payload);
+    const newScoreRef = doc(db, "exams_scores", customDocId);
+    await setDoc(newScoreRef, payload);
     
     alert(`✅ Assessment successfully uploaded into root 'exams_scores' for ${payload.studentName}!`);
     return { success: true };
