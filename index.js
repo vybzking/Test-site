@@ -221,3 +221,25 @@ window.login = async function() {
     alert(`Login failed: ${error.message}`);
   }
 }
+
+
+async function loadMyGrades() {
+  const currentStudent = auth.currentUser;
+  if (!currentStudent) return;
+
+  try {
+    const scoresRef = collection(db, "exams_scores");
+    
+    // 🚨 This 'where' constraint mirrors your security rule perfectly
+    const q = query(scoresRef, where("studentUid", "==", currentStudent.uid));
+    
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach( doc => {
+      const examData = doc.data();
+      console.log(`Subject: ${examData.subject}, Grade Total: ${examData.totalObtained}`);
+      // Build your UI tables/cards here...
+    });
+  } catch (error) {
+    console.error("Error loading personal grades:", error);
+  }
+}
