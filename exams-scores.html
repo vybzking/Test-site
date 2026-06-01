@@ -119,15 +119,23 @@
 
   // Run initial routing configuration on verification of user session state
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      console.log("Authenticated session UID:", user.uid);
-      await initializePortal(user.uid);
-    } else {
-      console.log("No authorization token detected. Routing back to login...");
-      // window.location.href = "login.html";
+  if (user) {
+    // 1. Mark that we have passed validation
+    isUserAlreadyVerified = true; 
+    
+    console.log("Authenticated session UID:", user.uid);
+    await initializePortal(user.uid);
+  } else {
+    // 2. ONLY redirect if a user was never found in the first place
+    if (isUserAlreadyVerified) {
+      console.log("Ignored temporary auth cycling state.");
+      return; 
     }
-  });
 
+    console.log("No authorization token detected. Routing back to login...");
+    window.location.href = "login.html";
+  }
+});
   // Fetch role layout profile attributes from /users collection
   async function initializePortal(uid) {
     try {
