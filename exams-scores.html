@@ -1,1 +1,238 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Portal - Exam Performance</title>
+  <style>
+    :root {
+      --primary: #1e293b;
+      --accent: #d97706; /* Gold accent */
+      --background: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #334155;
+      --border: #e2e8f0;
+      --success: #15803d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--background); color: var(--text-main); padding: 2rem; }
+    
+    .container { max-width: 1100px; margin: 0 auto; }
+    
+    /* Header Styles */
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); }
+    h1 { color: var(--primary); font-size: 1.8rem; }
+    .user-badge { background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
+    
+    /* Teacher Controls View */
+    .filter-panel { background: var(--card-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1.5rem; display: none; align-items: center; gap: 1rem; }
+    .filter-panel label { font-weight: 600; color: var(--primary); }
+    select { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border); min-width: 220px; outline: none; font-size: 0.95rem; }
+    
+    /* Performance Table */
+    .table-container { background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background-color: var(--primary); color: white; padding: 1rem; font-weight: 600; font-size: 0.95rem; }
+    td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background-color: #f1f5f9; }
+    
+    /* Dynamic UI Badges */
+    .percentage-badge { background-color: #e2e8f0; color: var(--primary); padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 0.85rem; }
+    .percentage-badge.high { background-color: #dcfce7; color: var(--success); }
+    
+    .no-data { padding: 3rem; text-align: center; color: #64748b; font-style: italic; }
+    .loading { padding: 2rem; text-align: center; font-weight: 600; color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1 id="portal-title">Student Performance Dashboard</h1>
+      <p style="color: #64748b; margin-top: 0.25rem;" id="student-subtitle"></p>
+    </div>
+    <div class="user-badge" id="user-role-badge">Loading Session...</div>
+  </header>
+
+  <div class="filter-panel" id="teacher-controls">
+    <label for="studentSelect">Reviewing Transcript For:</label>
+    <select id="studentSelect" disabled>
+      <option value="" disabled selected>Loading active student directory...</option>
+    </select>
+  </div>
+
+  <div class="table-container">
+    <table id="scores-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Form/Class</th>
+          <th>Term</th>
+          <th>Objectives</th>
+          <th>Theory</th>
+          <th>Practicals</th>
+          <th>Total Score</th>
+          <th>Percentage</th>
+        </tr>
+      </thead>
+      <tbody id="scores-tbody">
+        <tr>
+          <td colspan="8" class="loading">Establishing secure connection to database...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  // 🔐 Remember to replace this with your actual Firebase Configuration key variables
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY_HERE",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // DOM Handles
+  const userRoleBadge = document.getElementById('user-role-badge');
+  const teacherControls = document.getElementById('teacher-controls');
+  const studentSelect = document.getElementById('studentSelect');
+  const scoresTbody = document.getElementById('scores-tbody');
+  const studentSubtitle = document.getElementById('student-subtitle');
+
+  // Track session configurations globally
+  let currentUserProfile = null;
+
+  // Run initial routing configuration on verification of user session state
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      console.log("Authenticated session UID:", user.uid);
+      await initializePortal(user.uid);
+    } else {
+      console.log("No authorization token detected. Routing back to login...");
+      window.location.href = "login.html";
+    }
+  });
+
+  // Fetch role layout profile attributes from /users collection
+  async function initializePortal(uid) {
+    try {
+      const userDocRef = doc(db, "users", uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (!userDocSnap.exists()) {
+        scoresTbody.innerHTML = `<tr><td colspan="8" class="no-data">Profile reference missing in database. contact admin.</td></tr>`;
+        return;
+      }
+
+      currentUserProfile = userDocSnap.data();
+      userRoleBadge.textContent = currentUserProfile.role.toUpperCase();
+
+      if (currentUserProfile.role === "teacher") {
+        // Enforce View Setup for Teachers
+        teacherControls.style.display = "flex";
+        await loadStudentDropdown();
+      } else {
+        // Enforce View Setup for individual Student reports directly
+        studentSubtitle.textContent = `Transcript Ledger for: ${currentUserProfile.displayName || 'Academic Account'}`;
+        await fetchAndRenderScores(uid);
+      }
+
+    } catch (error) {
+      console.error("Portal initialization breakdown:", error);
+    }
+  }
+
+  // POPULATE DROPDOWN (For Teacher Accounts)
+  async function loadStudentDropdown() {
+    try {
+      const q = query(collection(db, "users"), where("isAccountActive", "==", true), where("role", "==", "student"));
+      const querySnapshot = await getDocs(q);
+
+      studentSelect.innerHTML = '<option value="" disabled selected>Choose a student to review...</option>';
+      
+      if (querySnapshot.empty) {
+        studentSelect.innerHTML = '<option value="" disabled>No active student registry documents found</option>';
+        return;
+      }
+
+      querySnapshot.forEach((doc) => {
+        const option = document.createElement('option');
+        option.value = doc.id;
+        option.textContent = doc.data().displayName || "Unnamed Account";
+        studentSelect.appendChild(option);
+      });
+
+      studentSelect.disabled = false;
+      scoresTbody.innerHTML = `<tr><td colspan="8" class="no-data">Select a student profile from the control filter choice above to pull grades.</td></tr>`;
+
+      // Assign interaction updates
+      studentSelect.addEventListener('change', (e) => {
+        scoresTbody.innerHTML = `<tr><td colspan="8" class="loading">Retrieving records from exams data cluster...</td></tr>`;
+        fetchAndRenderScores(e.target.value);
+      });
+
+    } catch (error) {
+      console.error("Failed to build student directory layout dropdown:", error);
+    }
+  }
+
+  // QUERY EXAMS AND BUILD ROWS (Protected by Security Rules structure)
+  async function fetchAndRenderScores(targetStudentUid) {
+    try {
+      const scoresRef = collection(db, "exams_scores");
+      
+      // 🚨 CRITICAL: The security rule requires filtering precisely by studentUid string values
+      const q = query(scoresRef, where("studentUid", "==", targetStudentUid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        scoresTbody.innerHTML = `<tr><td colspan="8" class="no-data">No exam scores or assessment performance rows found for this account.</td></tr>`;
+        return;
+      }
+
+      scoresTbody.innerHTML = ""; // Clear table row layout elements completely
+
+      querySnapshot.forEach((doc) => {
+        const record = doc.data();
+        const tr = document.createElement('tr');
+
+        // Check performance score range tier to assign colors dynamically
+        const isHighGrade = record.percentage >= 75 ? "high" : "";
+
+        tr.innerHTML = `
+          <td style="font-weight: 600; text-transform: capitalize;">${record.subject}</td>
+          <td>${record.form || 'N/A'}</td>
+          <td>${record.term}</td>
+          <td>${record.objectivesObtained} <span style="color: #94a3b8;">/ ${record.objectivesPossible}</span></td>
+          <td>${record.theoryObtained} <span style="color: #94a3b8;">/ ${record.theoryPossible}</span></td>
+          <td>${record.practicalsObtained} <span style="color: #94a3b8;">/ ${record.practicalsPossible}</span></td>
+          <td style="font-weight: 600;">${record.totalObtained} <span style="font-weight: normal; color: #94a3b8;">/ ${record.totalPossible}</span></td>
+          <td><span class="percentage-badge ${isHighGrade}">${record.percentage}%</span></td>
+        `;
+        scoresTbody.appendChild(tr);
+      });
+
+    } catch (error) {
+      console.error("Error reading exam sheets:", error);
+      scoresTbody.innerHTML = `<tr><td colspan="8" class="no-data" style="color: #b91c1c;">Permission Denied: Unable to fetch scores records block.</td></tr>`;
+    }
+  }
+</script>
+
+</body>
+</html>
