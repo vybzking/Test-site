@@ -47,13 +47,15 @@ document.getElementById("signup-form").addEventListener("submit", async function
         emailField.style.outline = "tomato";
         emailError.innerText = "This user does not exist";
         emailError.style.color = "red";
+        }
+      
       }
       else{
         password2Field.style.outline = "tomato";
         password2Error.innerText = "password mismatch";
         password2Error.style.color = "red";
       }
-      
+    
     }
     
     // if (userCredential === null){
