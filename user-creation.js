@@ -21,6 +21,7 @@ async function createUser(e) {
       password2Error.style.color = "red";
     }
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log(userCredential);
     if (userCredential === null){
       emailField.style.outline = "tomato";
       emailError.innerText = "This user does not exist";
