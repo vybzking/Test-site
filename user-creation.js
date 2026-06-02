@@ -51,7 +51,7 @@ document.getElementById("signup-form").addEventListener("submit", async function
       
       }
       else{
-        password2Field.style.outline = "tomato";
+        password2Field.style.borderColor = "tomato";
         password2Error.innerText = "password mismatch";
         password2Error.style.color = "red";
       }
