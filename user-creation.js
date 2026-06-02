@@ -14,7 +14,7 @@ document.getElementById("signup-form").addEventListener("submit", async function
   const password2Field = document.getElementById('password2');
   const password2Error = document.getElementById('password2-error');
 
-  user = null;
+  let user = null;
   try {
     if (password !== password2){
       password2Field.style.outline = "tomato";
