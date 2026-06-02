@@ -51,7 +51,7 @@ document.getElementById("signup-form").addEventListener("submit", async function
       createdAt: serverTimestamp() // FIX: Replaced client-side new Date() with serverTimestamp()
     });
 
-    alert(`Account successfully created for ${fullName}!`);
+    alert(`Account successfully created for ${fullname}!`);
   } catch (error) {
     console.error("Registration Error:", error);
     alert(`Registration failed: ${error.message}`);
