@@ -7,6 +7,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { auth } from "./config.js";
 
+function chooseDashboard(uid){
+  
+}
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("Logged in user verified:", user.uid);
