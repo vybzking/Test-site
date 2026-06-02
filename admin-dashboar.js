@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin System Portal</title>
+    <script type="module" src="dashboard-guard.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn { background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>👑 Administrative Master Control</h2>
+        <button class="btn" onclick="handleLogout()">System Log Out</button>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h3>User Provisioning</h3>
+            <p>Create, archive, or batch-upload student and staff authentication credentials.</p>
+            <button onclick="window.location.href='#'" style="background:#007bff; color:white; border:none; padding:8px 12px; border-radius:4px;">Manage Accounts</button>
+        </div>
+        <div class="card">
+            <h3>System Status</h3>
+            <p>Database synchronization status, security metrics, and access audit logs.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from "./config.js";
+        window.handleLogout = () => auth.signOut().then(() => window.location.href = "index.html");
+    </script>
+</body>
+</html>
