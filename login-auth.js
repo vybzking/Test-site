@@ -16,3 +16,42 @@ onAuthStateChanged(auth, async (user) => {
   }
   // If no user is logged in, we do nothing! We just let them look at the login page.
 });
+
+
+const login = async function(e) {
+  e.preventDefault();
+  alert(e);
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const userDocRef = doc(db, "users", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      
+      if (userData.role === "teacher") {
+        alert(`Welcome back, Instructor ${userData.displayName || ''}!`);
+        window.location.href = "score-uploads.html"; 
+      } 
+      else if (userData.role === "student"){
+        alert(`Welcome back, ${userData.displayName || ''}!`);
+        window.location.href = "exams-scores.html"; 
+      }
+      else {
+        alert("Access Denied: This portal is reserved for teachers.");
+        await signOut(auth); 
+      }
+    } else {
+      alert("Login error: Profile document missing.");
+      await signOut(auth);
+    }
+  } catch (error) {
+    console.error("Login Error:", error);
+    alert(`Login failed: ${error.message}`);
+  }
+}
