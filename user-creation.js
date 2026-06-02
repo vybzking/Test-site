@@ -44,7 +44,7 @@ document.getElementById("signup-form").addEventListener("submit", async function
         alert(`Account successfully created for ${fullname}!`);
       }
       else{
-        emailField.style.outline = "tomato";
+        emailField.style.borderColor = "tomato";
         emailError.innerText = "This user does not exist";
         emailError.style.color = "red";
         }
