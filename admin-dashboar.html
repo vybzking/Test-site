@@ -14,7 +14,7 @@
 </head>
 <body>
     <header style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>👑 Administrative Master Control</h2>
+        <h2>Admin Dashboard</h2>
         <button class="btn" onclick="handleLogout()">System Log Out</button>
     </header>
 
@@ -30,9 +30,8 @@
         </div>
     </div>
 
-    <script type="module">
-        import { auth } from "./config.js";
-        window.handleLogout = () => auth.signOut().then(() => window.location.href = "index.html");
+    <script type="module" src="dashboard-auth.js">
+        
     </script>
 </body>
 </html>
