@@ -1,4 +1,16 @@
 
+import {  
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  addDoc, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { auth, db } from "./config.js";
 document.getElementById("signup-form").addEventListener("submit", async function(e){
