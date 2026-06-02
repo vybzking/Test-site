@@ -1,5 +1,6 @@
 
-const signup = async function() {
+const createUser = async function(e) {
+  e.preventDefault();
   const fullname = document.getElementById('fullname').value;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
