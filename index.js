@@ -194,6 +194,7 @@ window.signup = async function() {
 
 window.login = async function(e) {
   e.preventDefault();
+  alert(e);
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
