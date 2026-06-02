@@ -1,5 +1,6 @@
 
 const signup = async function() {
+  const fullname = document.getElementById('fullname').value;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const password2 = document.getElementById('password2').value;
@@ -15,14 +16,19 @@ const signup = async function() {
   try {
     if (password !== password2){
       password2Field.style.outline = "tomato";
-      password2Field.innerText = "password mismatch";
-      password2Field.style.color = "red";
+      password2Error.innerText = "password mismatch";
+      password2Error.style.color = "red";
     }
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    if (userCredential === null){
+      emailField.style.outline = "tomato";
+      emailError.innerText = "This user does not exist";
+      emailError.style.color = "red";
+    }
     const user = userCredential.user;
 
     await setDoc(doc(db, "users", user.uid), {
-      displayName: fullName,
+      displayName: fullname,
       email: email,
       role: "student",         
       isAccountActive: true,   
@@ -36,40 +42,3 @@ const signup = async function() {
   }
 }
 
-window.login = async function(e) {
-  e.preventDefault();
-  alert(e);
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    const userDocRef = doc(db, "users", user.uid);
-    const userDocSnap = await getDoc(userDocRef);
-
-    if (userDocSnap.exists()) {
-      const userData = userDocSnap.data();
-      
-      if (userData.role === "teacher") {
-        alert(`Welcome back, Instructor ${userData.displayName || ''}!`);
-        window.location.href = "score-uploads.html"; 
-      } 
-      else if (userData.role === "student"){
-        alert(`Welcome back, ${userData.displayName || ''}!`);
-        window.location.href = "exams-scores.html"; 
-      }
-      else {
-        alert("Access Denied: This portal is reserved for teachers.");
-        await signOut(auth); 
-      }
-    } else {
-      alert("Login error: Profile document missing.");
-      await signOut(auth);
-    }
-  } catch (error) {
-    console.error("Login Error:", error);
-    alert(`Login failed: ${error.message}`);
-  }
-}
