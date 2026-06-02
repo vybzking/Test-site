@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Hub</title>
+    <script type="module" src="dashboard-guard.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #007bff; }
+        .btn { background: #6c757d; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>🧑‍🎓 Student Academic Portal</h2>
+        <button class="btn" onclick="handleLogout()">Sign Out</button>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Report Cards</h3>
+            <p>Access and review published exam metrics, teacher remarks, and cumulative performance statistics.</p>
+            <button onclick="window.location.href='view-results.html'" style="background:#007bff; color:white; border:none; padding:8px 12px; border-radius:4px;">View My Grades</button>
+        </div>
+        <div class="card">
+            <h3>Course Materials</h3>
+            <p>Review current semester course tracks, syllabi files, and class schedules.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from "./config.js";
+        window.handleLogout = () => auth.signOut().then(() => window.location.href = "index.html");
+    </script>
+</body>
+</html>
