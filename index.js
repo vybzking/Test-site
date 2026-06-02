@@ -84,7 +84,7 @@ onAuthStateChanged(auth, async (user) => {
     console.log("No token found. Booting back to login...");
     // Only redirect if we aren't already on the login page to avoid loops
     if (!window.location.pathname.includes("login.html")) {
-       window.location.href = "login.html";
+       window.location.href = "index.html";
     }
   }
 });
@@ -211,7 +211,12 @@ window.login = async function(e) {
       if (userData.role === "teacher") {
         alert(`Welcome back, Instructor ${userData.displayName || ''}!`);
         window.location.href = "score-uploads.html"; 
-      } else {
+      } 
+      else if (userData.role === "student"){
+        alert(`Welcome back, ${userData.displayName || ''}!`);
+        window.location.href = "exams-scores.html"; 
+      }
+      else {
         alert("Access Denied: This portal is reserved for teachers.");
         await signOut(auth); 
       }
