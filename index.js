@@ -83,7 +83,7 @@ onAuthStateChanged(auth, async (user) => {
   } else {
     console.log("No token found. Booting back to login...");
     // Only redirect if we aren't already on the login page to avoid loops
-    if (!window.location.pathname.includes("login.html")) {
+    if (!window.location.pathname.includes("index.html")) {
        window.location.href = "index.html";
     }
   }
