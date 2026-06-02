@@ -1,5 +1,5 @@
 
-async function createUser(e) {
+document.getElementById("signup-form").addEventListener("submit", e=>{
   e.preventDefault();
   const fullname = document.getElementById('fullname').value;
   const email = document.getElementById('email').value;
@@ -43,4 +43,5 @@ async function createUser(e) {
     alert(`Registration failed: ${error.message}`);
   }
 }
+);
 
