@@ -1,4 +1,5 @@
 
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 document.getElementById("signup-form").addEventListener("submit", e=>{
   e.preventDefault();
   const fullname = document.getElementById('fullname').value;
