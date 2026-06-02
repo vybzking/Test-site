@@ -74,7 +74,7 @@ document.getElementById("signup-form").addEventListener("submit", async function
     // });
 
     // alert(`Account successfully created for ${fullname}!`);
-  } catch (error) {
+  catch (error) {
     console.error("Registration Error:", error);
     alert(`Registration failed: ${error.message}`);
   }
