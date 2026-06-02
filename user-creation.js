@@ -1,5 +1,5 @@
 
-async createUser function(e) {
+async function createUser(e) {
   e.preventDefault();
   const fullname = document.getElementById('fullname').value;
   const email = document.getElementById('email').value;
