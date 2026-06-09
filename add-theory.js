@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Markup for the new inputs
         newRow.innerHTML = `
-            <span>${questionNum}</span><input type="number" name="question-numbers[]" placeholder="Question number" min="1" max="100" required>
+            <span>${questionNum}.</span><input type="number" name="question-numbers[]" placeholder="Question number" min="1" max="100" required>
             <input type="text" name="questions[]" placeholder="Question" required>
             <button type="button" class="remove-btn">×</button>
         `;
