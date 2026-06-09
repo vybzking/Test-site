@@ -40,16 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         // Target all generated input arrays
-        const questionNumbers = document.querySelectorAll('input[name="question-numbers[]"]');
         const questions = document.querySelectorAll('input[name="questions[]"]');
-        
-        const assignmentData = [];
 
         // Loop through inputs and pair them up into objects
-        const questionNumbersExtract = Array.from(questionNumbers).map(questionNumber=>questionNumber.value);
+        
         const questionsExtract = Array.from(questions).map(question=>question.value);
-        for (i = 0; i < questionNumbersExtract.length; i++){
-             console.log(`${questionNumbersExtract[i]}. ${questionsExtract[i]}`);
+        for (i = 0; i < questionsExtract.length; i++){
+             console.log(`${i}. ${questionsExtract[i]}`);
         }
        
         // Next step: Loop through 'rosterData' and pass to your Firebase addDoc() function
