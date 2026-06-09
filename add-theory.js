@@ -45,10 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const assignmentData = [];
 
         // Loop through inputs and pair them up into objects
-        questionNumbers.forEach((input, index) => {
+        questions.forEach((input, index) => {
             assignmentData.push({
-                questionNumber: input.value,
-                question: questions[index].value,
+                questionNumber: index,
+                question: question.value,
                 // classId: "class_abc" // example static class ID
             });
         });
