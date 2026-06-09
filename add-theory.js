@@ -4,16 +4,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('assignment-form');
 
     // 1. Function to create a new input row
+    let questionNum = 2;
     addBtn.addEventListener('click', () => {
         const newRow = document.createElement('div');
         newRow.classList.add('form-row');
 
         // Markup for the new inputs
         newRow.innerHTML = `
-            <input type="number" name="question-numbers[]" placeholder="Question number" min="1" max="100" required>
+            <span>${questionNum}</span><input type="number" name="question-numbers[]" placeholder="Question number" min="1" max="100" required>
             <input type="text" name="questions[]" placeholder="Question" required>
             <button type="button" class="remove-btn">×</button>
         `;
+        questionNum++;
 
         // Append the new row to our container
         container.appendChild(newRow);
