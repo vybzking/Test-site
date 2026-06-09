@@ -18,10 +18,13 @@ onAuthStateChanged(auth, async (user) => {
 // ==========================================
 async function loadStudentAssessment(user) {
   try {
-    const resultRef = doc("exams_");
-    const records = await getDoc();
-    const newScoreRef = doc(db, "exams_scores", customDocId);
-    await setDoc(newScoreRef, payload);
+    const resultRef = doc(db, "exams_scores", where("student", "==", user.uid));
+    const exams_records = await getDoc(resultRef);
+    if (!records){
+      return
+    }
+
+    const result = exams_records.data();
     
     alert(`✅ Assessment successfully uploaded into root 'exams_scores' for ${payload.studentName}!`);
     return { success: true };
