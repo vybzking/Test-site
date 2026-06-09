@@ -43,11 +43,11 @@ const login = async function(e) {
         window.location.href = "exams-scores.html"; 
       }
       else {
-        alert("Access Denied: This portal is reserved for teachers.");
+        alert("Access Denied: You are unauthorized to view this page.");
         await signOut(auth); 
       }
     } else {
-      alert("Login error: Profile document missing.");
+      alert("Login error: This user does not exist.");
       await signOut(auth);
     }
   } catch (error) {
