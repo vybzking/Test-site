@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Target all generated input arrays
         const questionNumbers = document.querySelectorAll('input[name="question-numbers[]"]');
-        const questions = document.querySelectorAll('input[name="names[]"]');
+        const questions = document.querySelectorAll('input[name="questions[]"]');
         
         const assignmentData = [];
 
