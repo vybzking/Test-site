@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Loop through inputs and pair them up into objects
         const questionNumbersExtract = Array.from(questionNumber).map(questionNumber=>questionNumber.value);
         const questionsExtract = Array.from(questions).map(question=>question.value);
-        for (i = 0; i < questionNumbersExract.length){
+        for (i = 0; i < questionNumbersExtract.length; i++){
              console.log(`${questionNumbersExtract[i]}. ${questionsExtract[i]}`);
         }
        
