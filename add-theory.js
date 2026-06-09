@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         questionNumbers.forEach((input, index) => {
             assignmentData.push({
                 questionNumber: input.value,
-                question: emails[index].value,
+                question: questions[index].value,
                 // classId: "class_abc" // example static class ID
             });
         });
