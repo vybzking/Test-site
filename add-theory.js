@@ -45,15 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const assignmentData = [];
 
         // Loop through inputs and pair them up into objects
-        questions.forEach((input, index) => {
-            assignmentData.push({
-                questionNumber: index,
-                question: question.value,
-                // classId: "class_abc" // example static class ID
-            });
-        });
-
-        console.log("Structured Data for Firebase:", assignmentData);
+        const questionNumbersExtract = Array.from(questionNumber).map(questionNumber=>questionNumber.value);
+        const questionsExtract = Array.from(questions).map(question=>question.value);
+        for (i = 0; i < questionNumbersExract.length){
+             console.log(`${questionNumbersExtract[i]}. ${questionsExtract[i]}`);
+        }
+       
         // Next step: Loop through 'rosterData' and pass to your Firebase addDoc() function
-    });
+        });
+    
 });
