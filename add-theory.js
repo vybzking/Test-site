@@ -39,21 +39,21 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         // Target all generated input arrays
-        const names = document.querySelectorAll('input[name="studentName[]"]');
-        const emails = document.querySelectorAll('input[name="studentEmail[]"]');
+        const questionNumbers = document.querySelectorAll('input[name="question-numbers[]"]');
+        const questions = document.querySelectorAll('input[name="names[]"]');
         
-        const rosterData = [];
+        const assignmentData = [];
 
         // Loop through inputs and pair them up into objects
-        names.forEach((input, index) => {
-            rosterData.push({
-                name: input.value,
-                email: emails[index].value,
-                classId: "class_abc" // example static class ID
+        questionNumbers.forEach((input, index) => {
+            assignmentData.push({
+                questionNumber: input.value,
+                question: emails[index].value,
+                // classId: "class_abc" // example static class ID
             });
         });
 
-        console.log("Structured Data for Firebase:", rosterData);
+        console.log("Structured Data for Firebase:", assignmentData);
         // Next step: Loop through 'rosterData' and pass to your Firebase addDoc() function
     });
 });
