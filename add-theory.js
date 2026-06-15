@@ -19,6 +19,19 @@ import {
   signOut 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    console.log("Logged in user verified:", user.uid);
+    await loadActiveStudents();
+  } else {
+    console.log("No token found. Booting back to login...");
+    // Only redirect if we aren't already on the login page to avoid loops
+    if (!window.location.pathname.includes("index.html")) {
+       window.location.href = "index.html";
+    }
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('dynamic-fields-container');
     const addBtn = document.getElementById('add-field-btn');
