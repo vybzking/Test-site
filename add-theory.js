@@ -1,4 +1,23 @@
 import {auth, db} from "./config.js";
+import {
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  addDoc, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('dynamic-fields-container');
