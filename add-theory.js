@@ -46,8 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const questionsExtract = Array.from(questions).map(question=>question.value);
         console.log(questionsExtract);
-        const questionsRef = doc(db, "questions");
-        await addDoc(questionsRef, questionsExtract);
+        const docRef = await addDoc(collection(db, "questions"), questionsExtract);
         // for (i = 0; i < questionsExtract.length; i++){
         //      console.log(`${i + 1}. ${questionsExtract[i]}`);
         // }
