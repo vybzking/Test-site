@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 3. Handling Form Submission (Extracting data for Firebase)
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async function(e) => {
         e.preventDefault();
 
         // Target all generated input arrays
