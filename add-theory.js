@@ -67,7 +67,25 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const questionsExtract = Array.from(questions).map(question=>question.value);
         console.log(questionsExtract);
-        const docRef = await addDoc(collection(db, "questions"), questionsExtract);
+       try {
+          // 4. Use addDoc with await inside a try/catch block
+          const docRef = await addDoc(collection(db, "questions"), questionsExtract);
+
+          console.log("Document successfully written with ID: ", docRef.id);
+    
+          // 5. Success actions (e.g., clear form, alert user)
+          alert("Question saved successfully!");
+          form.reset();
+
+          } catch (error) {
+        // 6. Always handle potential errors (e.g., permission denied, network issues)
+        console.error("Error adding document: ", error);
+        alert("Failed to save question. Check console for details.");
+        }finally {
+        // 7. Re-enable the button regardless of success or failure
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Save Question";
+        }
         // for (i = 0; i < questionsExtract.length; i++){
         //      console.log(`${i + 1}. ${questionsExtract[i]}`);
         // }
