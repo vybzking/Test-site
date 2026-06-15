@@ -1,3 +1,5 @@
+import {auth, db} from "./config.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('dynamic-fields-container');
     const addBtn = document.getElementById('add-field-btn');
