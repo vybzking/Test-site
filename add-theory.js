@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                "subject": "Science",
                "form": "2",
                "teacher": "",
-               "assessment-type: "quiz",
+               "assessment-type": "quiz",
                "date": serverTimestamp(),
              });
         }
