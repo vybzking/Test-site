@@ -69,7 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(questionsExtract);
        try {
           // 4. Use addDoc with await inside a try/catch block
-          const docRef = await addDoc(collection(db, "questions"), questionsExtract);
+          for (i = 0; i < questionsExtract.length; i++){
+             const docRef = await addDoc(collection(db, "questions"), {
+               "question-number":i,
+               "question": questionsExtract[i],
+               "subject": "Science",
+               "form": "2",
+               "teacher": "",
+               "assessment-type: "quiz",
+               "date": serverTimestamp(),
+             });
+        }
+          
 
           console.log("Document successfully written with ID: ", docRef.id);
     
