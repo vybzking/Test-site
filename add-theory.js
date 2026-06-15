@@ -94,8 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("Failed to save question. Check console for details.");
         }finally {
         // 7. Re-enable the button regardless of success or failure
-          submitBtn.disabled = false;
-          submitBtn.innerText = "Save Question";
+          // submitBtn.disabled = false;
+          // submitBtn.innerText = "Save Question";
+           console.log("otherwise");
         }
         // for (i = 0; i < questionsExtract.length; i++){
         //      console.log(`${i + 1}. ${questionsExtract[i]}`);
