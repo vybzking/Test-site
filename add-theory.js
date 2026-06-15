@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(questionsExtract);
        try {
           // 4. Use addDoc with await inside a try/catch block
-          for (i = 0; i < questionsExtract.length; i++){
+          for (let i = 0; i < questionsExtract.length; i++){
              const docRef = await addDoc(collection(db, "questions"), {
                "question-number":i,
                "question": questionsExtract[i],
