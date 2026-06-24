@@ -25,7 +25,7 @@ onAuthStateChanged(auth, async (user) => {
     // 3. Match the current page to the required role
     let isAuthorized = false;
 
-    if (currentPath.includes("admin-dashboard.html") && userRole === "admin") {
+    if (currentPath.includes("add-subject.html") && userRole === "admin") {
       isAuthorized = true;
     }
 
