@@ -36,7 +36,7 @@ const login = async function(e) {
       
       if (userData.role === "teacher") {
         alert(`Welcome back, Instructor ${userData.displayName || ''}!`);
-        window.location.href = "score-uploads.html"; 
+        window.location.href = "teachers-dashboard.html"; 
       } 
       else if (userData.role === "student"){
         alert(`Welcome back, ${userData.displayName || ''}!`);
