@@ -17,7 +17,8 @@ onAuthStateChanged(auth, async (user) => {
   // If no user is logged in, we do nothing! We just let them look at the login page.
 });
 
-document.getElementById("submit-button").addEventListener("submit", async function(){
+document.getElementById("submit-button").addEventListener("submit", async function(e){
+    e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
