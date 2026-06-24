@@ -85,7 +85,7 @@ subjectForm.addEventListener('submit', async (e) => {
       subjectForm.reset(); // Clear the form fields
     }
     else{
-      alert(`$(subjectData.name) exists`);
+      alert(`${subjectData.name} exists`);
     }
   } 
   catch (error) {
