@@ -84,6 +84,9 @@ subjectForm.addEventListener('submit', async (e) => {
       showStatus(`Subject successfully created with ID: ${docRef.id}`, true);
       subjectForm.reset(); // Clear the form fields
     }
+    else{
+      alert(`$(subjectData.name) exists`);
+    }
   } 
   catch (error) {
     console.error("Error adding document: ", error);
