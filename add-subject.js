@@ -59,24 +59,22 @@ function showStatus(message, isSuccess) {
 
 // Form Submit Event Listener
 subjectForm.addEventListener('submit', async (e) => {
-e.preventDefault(); // Prevent page reload
+  e.preventDefault(); // Prevent page reload
 
-// Disable button and change text during submission
-submitBtn.disabled = true;
-submitBtn.textContent = 'Saving...';
-statusMessage.classList.add('hidden');
+  // Disable button and change text during submission
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Saving...';
+  statusMessage.classList.add('hidden');
 
-// Get form values
-const subjectData = {
-name: document.getElementById('subjectName').value.trim().toLowerCase(),
-code: document.getElementById('subjectCode').value.trim().toUpperCase(),
-department: document.getElementById('department').value,
-description: document.getElementById('description').value.trim(),
-createdAt: serverTimestamp() // Firebase server timestamp
-};
-
-async function saveSubject(e){
-  e.preventDefault();
+  // Get form values
+  const subjectData = {
+  name: document.getElementById('subjectName').value.trim().toLowerCase(),
+  code: document.getElementById('subjectCode').value.trim().toUpperCase(),
+  department: document.getElementById('department').value,
+  description: document.getElementById('description').value.trim(),
+  createdAt: serverTimestamp() // Firebase server timestamp
+  };
+  
   try {
     // Add a new document with a generated ID to the "subjects" collection
     const searchData = await getDoc(query(collection(db, "subjects"), where("name","==",subjectData.name), where("code","==",subjectData.code)));
@@ -96,6 +94,6 @@ async function saveSubject(e){
     submitBtn.disabled = false;
     submitBtn.textContent = 'Add Subject';
   }
-}
+});
   
 
