@@ -40,18 +40,23 @@ async function loadActiveTeachers() {
 }
 
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    console.log("Logged in user verified:", user.uid);
-    if (user.role === "admin"){
-      await loadActiveTeachers();
+ const docSnap = await getDoc(doc(db, "users", user.uid));
+    
+    // Verify the document exists before pulling data
+    if (docSnap.exists()) {
+        const userProfile = docSnap.data();
+        
+        if (userProfile.role === "admin") {
+            await loadActiveTeachers();
+        }
+    } 
+    else {
+        console.log("User document does not exist in Firestore.");
     }
-  } else {
-    console.log("No token found. Booting back to login...");
-    // Only redirect if we aren't already on the login page to avoid loops
+
     if (!window.location.pathname.includes("index.html")) {
        window.location.href = "index.html";
     }
-  }
 });
 
 
