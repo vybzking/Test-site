@@ -63,6 +63,41 @@ async function loadActiveTeachers() {
 }
 
 
+async function loadSubjects() {
+  const checkBoxContainer = document.getElementById("subjectCheckboxGroup");
+  try {
+    const usersRef = collection(db, "subjects");
+    
+    // FIX: Combined compound conditions using proper comma syntax
+    const querySnapshot = await getDocs(usersRef);
+    console.log("subjects", querySnapshot);
+
+    if (querySnapshot.empty) {
+      // would be worked on later....................................................................................
+      alert("no data available");
+      return;
+    }
+
+    querySnapshot.forEach((doc) => {
+      const subjectData = doc.data();
+      const checkBox = document.createElement(`<label class="flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50/40 select-none transition space-x-3">
+                        <input type="checkbox" value="${subjectData.uid}" class="subject-checkbox w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <div class="text-sm">
+                            <p class="font-semibold text-gray-800">${subjectData.name}</p>
+                            <p class="text-xs text-gray-500">${subjectData.code}</p>
+                        </div>
+                    </label>
+`);
+      
+      checkBoxContainer.appendChild(checkBox);
+    });
+
+  } catch (error) {
+    console.error("Error fetching subjects:", error);
+  }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
             const availablePool = document.getElementById('availablePool');
             const assignedPool = document.getElementById('assignedPool');
