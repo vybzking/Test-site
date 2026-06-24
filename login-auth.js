@@ -26,7 +26,7 @@ document.getElementById("submit-button").addEventListener("submit", async functi
       const user = userCredential.user;
       const userDocRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userDocRef);
-
+      alert("hi there");
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
       
