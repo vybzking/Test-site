@@ -20,7 +20,7 @@ onAuthStateChanged(auth, async (user) => {
 
 const login = async function(e) {
   e.preventDefault();
-  alert(e);
+  console.log(e);
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
