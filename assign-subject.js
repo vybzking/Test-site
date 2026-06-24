@@ -22,9 +22,9 @@ onAuthStateChanged(auth, async (user) => {
         console.log("User document does not exist in Firestore.");
     }
 
-    if (!window.location.pathname.includes("index.html")) {
-       window.location.href = "index.html";
-    }
+    // if (!window.location.pathname.includes("index.html")) {
+    //    window.location.href = "index.html";
+    // }
 });
 
 
