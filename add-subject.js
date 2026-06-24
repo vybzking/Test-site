@@ -75,23 +75,27 @@ description: document.getElementById('description').value.trim(),
 createdAt: serverTimestamp() // Firebase server timestamp
 };
 
-try {
-  // Add a new document with a generated ID to the "subjects" collection
-  const searchData = getDoc(query(collection(db, "subjects"), where("name","==",subjectData.name), where("code","==",subjectData.code)));
-  if (!searchData.exists()){
-    const docRef = await addDoc(collection(db, "subjects"), subjectData);
+async function saveSubject(e){
+  e.preventDefault();
+  try {
+    // Add a new document with a generated ID to the "subjects" collection
+    const searchData = await getDoc(query(collection(db, "subjects"), where("name","==",subjectData.name), where("code","==",subjectData.code)));
+    if (!searchData.exists()){
+      const docRef = await addDoc(collection(db, "subjects"), subjectData);
                 
-    showStatus(`Subject successfully created with ID: ${docRef.id}`, true);
-    subjectForm.reset(); // Clear the form fields
+      showStatus(`Subject successfully created with ID: ${docRef.id}`, true);
+      subjectForm.reset(); // Clear the form fields
+    }
+  } 
+  catch (error) {
+    console.error("Error adding document: ", error);
+    showStatus(`Error adding subject: ${error.message}`, false);
   }
-} 
-catch (error) {
-  console.error("Error adding document: ", error);
-  showStatus(`Error adding subject: ${error.message}`, false);
+  finally {
+    // Re-enable button
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Add Subject';
   }
-finally {
-  // Re-enable button
-  submitBtn.disabled = false;
-  submitBtn.textContent = 'Add Subject';
-  }
-  });
+}
+  
+
