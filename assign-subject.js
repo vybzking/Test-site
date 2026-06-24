@@ -16,6 +16,7 @@ onAuthStateChanged(auth, async (user) => {
         
         if (userProfile.role === "admin") {
             await loadActiveTeachers();
+            await loadSubjects();
         }
     } 
     else {
