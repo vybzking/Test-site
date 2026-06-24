@@ -14,6 +14,7 @@ async function loadActiveTeachers() {
     // FIX: Combined compound conditions using proper comma syntax
     const q = query(usersRef, where("isAccountActive", "==", true), where("role", "==", "teacher"));
     const querySnapshot = await getDocs(q);
+    console.log("teachers", querySnapshot);
 
     teacherSelect.innerHTML = '<option value="" disabled selected>Choose a teacher...</option>';
 
