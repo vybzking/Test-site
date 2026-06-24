@@ -52,6 +52,6 @@ document.getElementById("submit-button").addEventListener("submit", async functi
     console.error("Login Error:", error);
     alert(`Login failed: ${error.message}`);
     }
-  }
+ }
 );
 
