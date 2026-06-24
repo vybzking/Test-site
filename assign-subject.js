@@ -6,6 +6,29 @@ import { onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.8.0/fir
 const teacherSelect = document.getElementById('teacherSelect');
 // const wassceForm = document.getElementById('wassce-score-form');
 
+
+onAuthStateChanged(auth, async (user) => {
+ const docSnap = await getDoc(doc(db, "users", user.uid));
+    
+    // Verify the document exists before pulling data
+    if (docSnap.exists()) {
+        const userProfile = docSnap.data();
+        
+        if (userProfile.role === "admin") {
+            await loadActiveTeachers();
+        }
+    } 
+    else {
+        console.log("User document does not exist in Firestore.");
+    }
+
+    if (!window.location.pathname.includes("index.html")) {
+       window.location.href = "index.html";
+    }
+});
+
+
+
 async function loadActiveTeachers() {
   if (!teacherSelect) return;
   try {
@@ -38,26 +61,6 @@ async function loadActiveTeachers() {
     teacherSelect.innerHTML = '<option value="" disabled>Failed to load teachers</option>';
   }
 }
-
-onAuthStateChanged(auth, async (user) => {
- const docSnap = await getDoc(doc(db, "users", user.uid));
-    
-    // Verify the document exists before pulling data
-    if (docSnap.exists()) {
-        const userProfile = docSnap.data();
-        
-        if (userProfile.role === "admin") {
-            await loadActiveTeachers();
-        }
-    } 
-    else {
-        console.log("User document does not exist in Firestore.");
-    }
-
-    if (!window.location.pathname.includes("index.html")) {
-       window.location.href = "index.html";
-    }
-});
 
 
 document.addEventListener('DOMContentLoaded', () => {
