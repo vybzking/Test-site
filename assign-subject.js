@@ -41,7 +41,9 @@ async function loadActiveTeachers() {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("Logged in user verified:", user.uid);
-    await loadActiveTeachers();
+    if (user.role === "admin"){
+      await loadActiveTeachers();
+    }
   } else {
     console.log("No token found. Booting back to login...");
     // Only redirect if we aren't already on the login page to avoid loops
