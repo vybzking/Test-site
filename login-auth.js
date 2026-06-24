@@ -17,41 +17,41 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
 //   // If no user is logged in, we do nothing! We just let them look at the login page.
 // });
 
+document.getElementById("submit-button").addEventListener("submit", async function(){
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-const login = async function(e) {
-  e.preventDefault();
-  console.log(e);
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
 
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    const userDocRef = doc(db, "users", user.uid);
-    const userDocSnap = await getDoc(userDocRef);
-
-    if (userDocSnap.exists()) {
-      const userData = userDocSnap.data();
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
       
-      if (userData.role === "teacher") {
-        alert(`Welcome back, Instructor ${userData.displayName || ''}!`);
-        window.location.href = "teachers-dashboard.html"; 
+        if (userData.role === "teacher") {
+          alert(`Welcome back, Instructor ${userData.displayName || ''}!`);
+          window.location.href = "teachers-dashboard.html"; 
+        } 
+        else if (userData.role === "student"){
+          alert(`Welcome back, ${userData.displayName || ''}!`);
+          window.location.href = "exams-scores.html"; 
+          }
+        else {
+          alert("Access Denied: You are unauthorized to view this page.");
+          await signOut(auth); 
+        }
       } 
-      else if (userData.role === "student"){
-        alert(`Welcome back, ${userData.displayName || ''}!`);
-        window.location.href = "exams-scores.html"; 
-      }
       else {
-        alert("Access Denied: You are unauthorized to view this page.");
-        await signOut(auth); 
+        alert("Login error: This user does not exist.");
+        await signOut(auth);
       }
-    } else {
-      alert("Login error: This user does not exist.");
-      await signOut(auth);
-    }
-  } catch (error) {
+    } 
+    catch (error) {
     console.error("Login Error:", error);
     alert(`Login failed: ${error.message}`);
+    }
   }
-}
+});
+
