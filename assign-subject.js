@@ -1,4 +1,38 @@
 
+const teacherSelect = document.getElementById('teacherSelect');
+const wassceForm = document.getElementById('wassce-score-form');
+async function loadActiveTeachers() {
+  if (!teacherSelect) return;
+  try {
+    const usersRef = collection(db, "users");
+    
+    // FIX: Combined compound conditions using proper comma syntax
+    const q = query(usersRef, where("isAccountActive", "==", true), where("role", "==", "teacher"));
+    const querySnapshot = await getDocs(q);
+
+    teacherSelect.innerHTML = '<option value="" disabled selected>Choose a teacher...</option>';
+
+    if (querySnapshot.empty) {
+      teacherSelect.innerHTML = '<option value="" disabled>No active teachers found</option>';
+      return;
+    }
+
+    querySnapshot.forEach((doc) => {
+      const teacherData = doc.data();
+      const option = document.createElement('option');
+      option.value = doc.id; 
+      option.textContent = teacherData.displayName || "Unnamed Teacher";
+      teacherSelect.appendChild(option);
+    });
+
+    teacherSelect.disabled = false;
+
+  } catch (error) {
+    console.error("Error fetching students:", error);
+    teacherSelect.innerHTML = '<option value="" disabled>Failed to load teachers</option>';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
             const availablePool = document.getElementById('availablePool');
             const assignedPool = document.getElementById('assignedPool');
