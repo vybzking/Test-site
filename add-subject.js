@@ -1,5 +1,6 @@
 import {auth, db} from "./config.js";
 import { collection, addDoc, serverTimestamp, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 onAuthStateChanged(auth, async (user) => {
   // 1. Force unauthenticated users back to login
