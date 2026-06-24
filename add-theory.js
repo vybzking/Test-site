@@ -22,17 +22,9 @@ import {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("Logged in user verified:", user.uid);
-    await loadActiveStudents();
-  } else {
-    console.log("No token found. Booting back to login...");
-    // Only redirect if we aren't already on the login page to avoid loops
-    if (!window.location.pathname.includes("index.html")) {
-       window.location.href = "index.html";
-    }
-  }
-});
+    // await loadActiveStudents();
 
-document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('dynamic-fields-container');
     const addBtn = document.getElementById('add-field-btn');
     const form = document.getElementById('assignment-form');
@@ -53,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Append the new row to our container
         container.appendChild(newRow);
     });
+      
 
     // 2. Event Delegation for removing rows
     // (Handles clicking buttons that didn't exist when the page first loaded)
@@ -119,3 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     
 });
+
+    
+    
+  } else {
+    console.log("No token found. Booting back to login...");
+    // Only redirect if we aren't already on the login page to avoid loops
+    if (!window.location.pathname.includes("index.html")) {
+       window.location.href = "index.html";
+    }
+  }
+});
+
