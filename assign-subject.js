@@ -1,6 +1,11 @@
 
+import {auth, db} from "./config.js";
+import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
 const teacherSelect = document.getElementById('teacherSelect');
-const wassceForm = document.getElementById('wassce-score-form');
+// const wassceForm = document.getElementById('wassce-score-form');
+
 async function loadActiveTeachers() {
   if (!teacherSelect) return;
   try {
