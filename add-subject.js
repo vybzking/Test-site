@@ -1,5 +1,5 @@
 import {auth, db} from "./config.js";
-import { collection, addDoc, serverTimestamp, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 onAuthStateChanged(auth, async (user) => {
@@ -77,8 +77,8 @@ subjectForm.addEventListener('submit', async (e) => {
   
   try {
     // Add a new document with a generated ID to the "subjects" collection
-    const searchData = await getDoc(query(collection(db, "subjects"), where("name","==",subjectData.name), where("code","==",subjectData.code)));
-    if (!searchData.exists()){
+    const searchData = await getDocs(query(collection(db, "subjects"), where("name","==",subjectData.name), where("code","==",subjectData.code)));
+    if (searchData.empty()){
       const docRef = await addDoc(collection(db, "subjects"), subjectData);
                 
       showStatus(`Subject successfully created with ID: ${docRef.id}`, true);
