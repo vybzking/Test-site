@@ -19,6 +19,16 @@ import {
   signOut 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+// gets the subject taught by a teacher 
+subject = document.getElementById('subject-field');
+
+// gets the form the question is for
+level = document.getElementById('level-field');
+
+// gets the form the question is for
+assessmentType= document.getElementById('assessment-type-field');
+
+// ensures the user is authenticated and have the privilege to view this page.
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("Logged in user verified:", user.uid);
@@ -73,19 +83,19 @@ onAuthStateChanged(auth, async (user) => {
         
         const questionsExtract = Array.from(questions).map(question=>question.value);
         console.log(questionsExtract);
-       try {
+        try {
           // 4. Use addDoc with await inside a try/catch block
           for (let i = 0; i < questionsExtract.length; i++){
              const docRef = await addDoc(collection(db, "questions"), {
                "question-number":i,
                "question": questionsExtract[i],
-               "subject": "Science",
-               "form": "2",
-               "teacher": "",
-               "assessment-type": "quiz",
+               "subject": subject,
+               "form": level,
+               "teacher": user.uid,
+               "assessment-type": assessmentType,
                "date": serverTimestamp(),
              });
-        }
+           }
           
 
           console.log("Document successfully written with ID: ", docRef.id);
