@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("Logged in user verified:", user.uid);
     // await loadActiveStudents();
-
+    const assignedSubjects = getDocs(query("", where(teacher, "==", user.uid)))
     document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('dynamic-fields-container');
     const addBtn = document.getElementById('add-field-btn');
