@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const saveBtn = document.getElementById('assign-button');
             const statusAlert = document.getElementById('statusAlert');
             const checkboxes = document.querySelectorAll('.subject-checkbox');
-            const subjectsSelected = [];
+            let subjectsSelected = [];
             // Simulated Teacher Pre-assigned Data Mockup
             const TeacherAssignments = {
                 
@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Load assignments for this teacher from our mock data loop
                 
                 checkboxes.forEach(item=>{
+                    console.log(item.value);
                     subjectsSelected.push(item.value);
                 })
                 
