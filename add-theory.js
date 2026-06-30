@@ -20,13 +20,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // gets the subject taught by a teacher 
-subject = document.getElementById('subject-field');
+const subject = document.getElementById('subject-field');
 
 // gets the form the question is for
-level = document.getElementById('level-field');
+const level = document.getElementById('level-field');
 
 // gets the form the question is for
-assessmentType= document.getElementById('assessment-type-field');
+const assessmentType= document.getElementById('assessment-type-field');
 
 // ensures the user is authenticated and have the privilege to view this page.
 onAuthStateChanged(auth, async (user) => {
