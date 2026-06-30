@@ -135,8 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Load assignments for this teacher from our mock data loop
                 
-                const selections = Array.from(checkboxes).map(cb => cb.value);
-                console.log("data from checkbox: ", selections);
+                
                 checkboxes.forEach((cb) => {
                     cb.checked = assignedIds.includes(cb.value);
                 });
@@ -144,6 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Handle Save Button Clicks
             saveBtn.addEventListener('click', () => {
+                const selections = Array.from(checkboxes).map(cb => cb.value);
+                console.log("data from checkbox: ", selections);
                 const teacherId = teacherSelect.value;
 
                 // Collect values of all checked boxes
