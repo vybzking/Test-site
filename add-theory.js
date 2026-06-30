@@ -141,7 +141,7 @@ async function loadSubjects(userId) {
     
         // FIX: Combined compound conditions using proper comma syntax
         const querySnapshot = await getDocs(usersRef);
-        console.log("subjects", querySnapshot);
+        console.log("subjects:", querySnapshot.forEach(i=>i));
 
         if (querySnapshot.empty) {
           // would be worked on later....................................................................................
