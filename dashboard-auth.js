@@ -46,3 +46,19 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = "index.html";
   }
 });
+
+async function handleLogOut(){
+    try {
+        // Step A: Detach active Firestore listeners first to avoid permission errors
+
+        // Step C: Sign out from Firebase Authentication
+        await signOut(auth);
+        console.log("User signed out successfully.");
+        
+        // Step D: Redirect user to login screen
+        window.location.href = "index.html";
+
+    } catch (error) {
+        console.error("Error during logout process:", error.message);
+    }
+}
