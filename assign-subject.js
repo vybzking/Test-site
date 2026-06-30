@@ -107,57 +107,116 @@ async function loadSubjects() {
 }
 
 
+// document.addEventListener('DOMContentLoaded', () => {
+//             const teacherSelect = document.getElementById('teacherSelect');
+//             const saveBtn = document.getElementById('assign-button');
+//             const statusAlert = document.getElementById('statusAlert');
+//             const checkboxes = document.querySelectorAll('.subject-checkbox');
+//             console.log("checkBoxes: ",checkboxes);
+//             let subjectsSelected = [];
+//             // Simulated Teacher Pre-assigned Data Mockup
+//             const TeacherAssignments = {
+                
+//             };
+
+//             // Listen for teacher selection to automatically check/uncheck items
+//             teacherSelect.addEventListener('change', (e) => {
+//                 const teacherId = e.target.value;
+//                 statusAlert.classList.add('hidden'); // Hide old messages
+
+//                 if (!teacherId) {
+//                     // Reset all checkboxes if no teacher is selected
+//                     checkboxes.forEach(cb => cb.checked = false);
+//                     saveBtn.disabled = true;
+//                     return;
+//                 }
+
+//                 // Enable the save button
+//                 saveBtn.disabled = false;
+
+//                 // Load assignments for this teacher from our mock data loop
+                
+                
+//                 // checkboxes.forEach((cb) => {
+//                 //     cb.checked = assignedIds.includes(cb.value);
+//                 // });
+//             });
+
+
+//             // Handle Save Button Clicks
+//             saveBtn.addEventListener('click', () => {
+//                 const selections = Array.from(checkboxes).map(cb => cb.value);
+//                 console.log("data from checkbox: ", selections);
+//                 const teacherId = teacherSelect.value;
+
+//                 // Collect values of all checked boxes
+
+//                 // const selectedSubjectIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+//                 // Update our local mock state
+//                 TeacherAssignments[teacherId] = selections;
+
+//                 // Show visual confirmation alert
+//                 statusAlert.textContent = `Successfully updated assignments for ${teacherId}! Assigned codes: [${selections.join(', ')}]`;
+//                 statusAlert.className = "p-4 text-sm rounded-lg bg-green-100 text-green-700";
+//                 statusAlert.classList.remove('hidden');
+//             });
+//         });
+
+
 document.addEventListener('DOMContentLoaded', () => {
-            const teacherSelect = document.getElementById('teacherSelect');
-            const saveBtn = document.getElementById('assign-button');
-            const statusAlert = document.getElementById('statusAlert');
-            const checkboxes = document.querySelectorAll('.subject-checkbox');
-            console.log("checkBoxes: ",checkboxes);
-            let subjectsSelected = [];
-            // Simulated Teacher Pre-assigned Data Mockup
-            const TeacherAssignments = {
-                
-            };
+    const teacherSelect = document.getElementById('teacherSelect');
+    const saveBtn = document.getElementById('assign-button');
+    const statusAlert = document.getElementById('statusAlert');
+    const checkboxes = document.querySelectorAll('.subject-checkbox');
+    
+    // Simulated Teacher Pre-assigned Data Mockup
+    // Example format: { "teacher-1": ["math", "science"], "teacher-2": ["history"] }
+    const TeacherAssignments = {};
 
-            // Listen for teacher selection to automatically check/uncheck items
-            teacherSelect.addEventListener('change', (e) => {
-                const teacherId = e.target.value;
-                statusAlert.classList.add('hidden'); // Hide old messages
+    // Listen for teacher selection to automatically check/uncheck items
+    teacherSelect.addEventListener('change', (e) => {
+        const teacherId = e.target.value;
+        statusAlert.classList.add('hidden'); // Hide old messages
 
-                if (!teacherId) {
-                    // Reset all checkboxes if no teacher is selected
-                    checkboxes.forEach(cb => cb.checked = false);
-                    saveBtn.disabled = true;
-                    return;
-                }
+        if (!teacherId) {
+            // Reset all checkboxes if no teacher is selected
+            checkboxes.forEach(cb => cb.checked = false);
+            saveBtn.disabled = true;
+            return;
+        }
 
-                // Enable the save button
-                saveBtn.disabled = false;
+        // Enable the save button
+        saveBtn.disabled = false;
 
-                // Load assignments for this teacher from our mock data loop
-                
-                
-                // checkboxes.forEach((cb) => {
-                //     cb.checked = assignedIds.includes(cb.value);
-                // });
-            });
-
-            // Handle Save Button Clicks
-            saveBtn.addEventListener('click', () => {
-                const selections = Array.from(checkboxes).map(cb => cb.value);
-                console.log("data from checkbox: ", selections);
-                const teacherId = teacherSelect.value;
-
-                // Collect values of all checked boxes
-
-                // const selectedSubjectIds = Array.from(checkedBoxes).map(cb => cb.value);
-
-                // Update our local mock state
-                TeacherAssignments[teacherId] = selections;
-
-                // Show visual confirmation alert
-                statusAlert.textContent = `Successfully updated assignments for ${teacherId}! Assigned codes: [${selections.join(', ')}]`;
-                statusAlert.className = "p-4 text-sm rounded-lg bg-green-100 text-green-700";
-                statusAlert.classList.remove('hidden');
-            });
+        // Load assignments for this teacher from our mock data (default to empty array if none exist)
+        const assignedIds = TeacherAssignments[teacherId] || [];
+        
+        // Loop through checkboxes and check them if their value matches the saved assignments
+        checkboxes.forEach((cb) => {
+            cb.checked = assignedIds.includes(cb.value);
         });
+    });
+
+    // Handle Save Button Clicks
+    saveBtn.addEventListener('click', () => {
+        const teacherId = teacherSelect.value;
+        
+        if (!teacherId) return; // Guard clause in case save is clicked without a teacher
+
+        // Collect values of ONLY checked boxes
+        const selections = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+            
+        console.log("Data from checked boxes: ", selections);
+
+        // Update our local mock state
+        TeacherAssignments[teacherId] = selections;
+
+        // Show visual confirmation alert
+        statusAlert.textContent = `Successfully updated assignments for ${teacherId}! Assigned codes: [${selections.join(', ')}]`;
+        statusAlert.className = "p-4 text-sm rounded-lg bg-green-100 text-green-700";
+        statusAlert.classList.remove('hidden');
+    });
+});
