@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             // Handle Save Button Clicks
-            saveBtn.addEventListener('click', () => {
+            saveBtn.addEventListener('click', async() => {
                 const checkboxes = document.querySelectorAll('.subject-checkbox');
                 const selections = Array.from(checkboxes).map(cb => cb.value);
                 console.log("data from checkbox: ", selections);
