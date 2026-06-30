@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Load assignments for this teacher from our mock data loop
                 const subjectsSelected = []
-                checkBoxes.forEach(item=>{
+                checkboxes.forEach(item=>{
                     subjectsSelected.push(item.value);
                 })
                 
