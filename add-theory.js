@@ -72,6 +72,47 @@ onAuthStateChanged(auth, async (user) => {
         }
     });
 
+    async function loadSubjects() {
+      const subjectsSelect = document.getElementById("subject");
+      try {
+        const usersRef = getDocs(query(collection(db, "subjects")), where("teacher", "==", user.uid));
+    
+        // FIX: Combined compound conditions using proper comma syntax
+        const querySnapshot = await getDocs(usersRef);
+        console.log("subjects", querySnapshot);
+
+        if (querySnapshot.empty) {
+          // would be worked on later....................................................................................
+          alert("no data available");
+          return;
+        }
+        ;
+        querySnapshot.forEach((doc) => {
+        const subjectData = doc.data();
+        console.log(subjectData);
+        // 1. Create the outer label element
+        const option = document.createElement('option');
+        option.setAttribute("value", subjectData.code);
+        option.textContent = subjectData.name;
+
+        // 2. Apply classes and attributes to the root element
+        //option.className = 'flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50/40 select-none transition space-x-3';
+
+        // 3. Inject the inner HTML structure safely
+        subjectSelect.appendChild(option);
+
+      
+        // checkBoxContainer.appendChild(label);
+      });
+
+  } catch (error) {
+    console.error("Error fetching subjects:", error);
+  }
+}
+
+
+      
+
     // 3. Handling Form Submission (Extracting data for Firebase)
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -133,4 +174,5 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+
 
