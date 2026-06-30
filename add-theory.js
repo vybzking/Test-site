@@ -32,7 +32,7 @@ const assessmentType= document.getElementById('assessment-type-field');
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("Logged in user verified:", user.uid);
-    // await loadActiveStudents();
+    await loadSubjects();
     // const assignedSubjects = getDocs(query("", where(teacher, "==", user.uid)))
     document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('dynamic-fields-container');
