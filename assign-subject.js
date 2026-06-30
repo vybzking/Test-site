@@ -135,14 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Load assignments for this teacher from our mock data loop
                 
-                checkboxes.forEach(item=>{
-                    console.log(item.value);
-                    subjectsSelected.push(item.value);
-                })
+                const selections = Array.from(checkedBoxes).map(cb => cb.value);
                 
-                checkboxes.forEach((cb) => {
-                    cb.checked = assignedIds.includes(cb.value);
-                });
+                // checkboxes.forEach((cb) => {
+                //     cb.checked = assignedIds.includes(cb.value);
+                // });
             });
 
             // Handle Save Button Clicks
@@ -154,10 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // const selectedSubjectIds = Array.from(checkedBoxes).map(cb => cb.value);
 
                 // Update our local mock state
-                TeacherAssignments[teacherId] = subjectsSelected;
+                TeacherAssignments[teacherId] = selections;
 
                 // Show visual confirmation alert
-                statusAlert.textContent = `Successfully updated assignments for ${teacherId}! Assigned codes: [${subjectsSelected.join(', ')}]`;
+                statusAlert.textContent = `Successfully updated assignments for ${teacherId}! Assigned codes: [${selections.join(', ')}]`;
                 statusAlert.className = "p-4 text-sm rounded-lg bg-green-100 text-green-700";
                 statusAlert.classList.remove('hidden');
             });
