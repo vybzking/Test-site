@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const saveBtn = document.getElementById('assign-button');
             const statusAlert = document.getElementById('statusAlert');
             const checkboxes = document.querySelectorAll('.subject-checkbox');
+            console.log("checkBoxes: ",checkboxes);
             let subjectsSelected = [];
             // Simulated Teacher Pre-assigned Data Mockup
             const TeacherAssignments = {
@@ -136,9 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Load assignments for this teacher from our mock data loop
                 
                 
-                checkboxes.forEach((cb) => {
-                    cb.checked = assignedIds.includes(cb.value);
-                });
+                // checkboxes.forEach((cb) => {
+                //     cb.checked = assignedIds.includes(cb.value);
+                // });
             });
 
             // Handle Save Button Clicks
