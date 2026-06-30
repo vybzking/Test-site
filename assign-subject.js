@@ -108,8 +108,7 @@ async function loadSubjects() {
 
 document.addEventListener('DOMContentLoaded', () => {
             const teacherSelect = document.getElementById('teacherSelect');
-            const checkboxGroup = document.getElementById('subjectCheckboxGroup');
-            const saveBtn = document.getElementById('saveAllocationBtn');
+            const saveBtn = document.getElementById('assign-button');
             const statusAlert = document.getElementById('statusAlert');
             const checkboxes = document.querySelectorAll('.subject-checkbox');
 
