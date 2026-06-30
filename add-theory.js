@@ -137,11 +137,11 @@ onAuthStateChanged(auth, async (user) => {
 async function loadSubjects(userId) {
       const subjectsSelect = document.getElementById("subject");
       try {
-        const usersRef = query(collection(db, "subjects"), where("teacher", "==", userId));
+        const userRef = doc(db, "users", userId);
     
         // FIX: Combined compound conditions using proper comma syntax
-        const querySnapshot = await getDocs(usersRef);
-        console.log("subjects:", querySnapshot.forEach(i=>i));
+        const querySnapshot = await getDoc(userRef);
+        console.log("subjects:", querySnapshot.data().subjects);
 
         if (querySnapshot.empty) {
           // would be worked on later....................................................................................
@@ -149,13 +149,11 @@ async function loadSubjects(userId) {
           return;
         }
         ;
-        querySnapshot.forEach((doc) => {
-        const subjectData = doc.data();
-        console.log(subjectData);
+        querySnapshot.data().subjects.forEach((subject) => {
         // 1. Create the outer label element
         const option = document.createElement('option');
-        option.setAttribute("value", subjectData.code);
-        option.textContent = subjectData.name;
+        option.setAttribute("value", subject);
+        option.textContent = subject;
 
         // 2. Apply classes and attributes to the root element
         //option.className = 'flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50/40 select-none transition space-x-3';
