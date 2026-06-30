@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const saveBtn = document.getElementById('assign-button');
             const statusAlert = document.getElementById('statusAlert');
             const checkboxes = document.querySelectorAll('.subject-checkbox');
-
+            const subjectsSelected = [];
             // Simulated Teacher Pre-assigned Data Mockup
             const TeacherAssignments = {
                 
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveBtn.disabled = false;
 
                 // Load assignments for this teacher from our mock data loop
-                const subjectsSelected = []
+                
                 checkboxes.forEach(item=>{
                     subjectsSelected.push(item.value);
                 })
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 TeacherAssignments[teacherId] = subjectsSelected;
 
                 // Show visual confirmation alert
-                statusAlert.textContent = `Successfully updated assignments for ${teacherName}! Assigned codes: [${selectedSubjectIds.join(', ')}]`;
+                statusAlert.textContent = `Successfully updated assignments for ${teacherId}! Assigned codes: [${subjectsSelected.join(', ')}]`;
                 statusAlert.className = "p-4 text-sm rounded-lg bg-green-100 text-green-700";
                 statusAlert.classList.remove('hidden');
             });
