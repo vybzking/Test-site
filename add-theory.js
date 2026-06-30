@@ -135,10 +135,10 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-async function loadSubjects(userid) {
+async function loadSubjects(userId) {
       const subjectsSelect = document.getElementById("subject");
       try {
-        const usersRef = getDocs(query(collection(db, "subjects")), where("teacher", "==", user.uid));
+        const usersRef = query(collection(db, "subjects"), where("teacher", "==", userId));
     
         // FIX: Combined compound conditions using proper comma syntax
         const querySnapshot = await getDocs(usersRef);
