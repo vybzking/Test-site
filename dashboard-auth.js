@@ -62,3 +62,5 @@ async function handleLogOut(){
         console.error("Error during logout process:", error.message);
     }
 }
+
+document.getElementById("logout-btn").addEventListener("click", handleLogout);
