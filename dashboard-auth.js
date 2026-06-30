@@ -63,4 +63,4 @@ async function handleLogOut(){
     }
 }
 
-document.getElementById("logout-btn").addEventListener("click", handleLogout());
+document.getElementById("logout-btn").addEventListener("click", await handleLogout());
