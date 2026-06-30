@@ -107,66 +107,57 @@ async function loadSubjects() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-            const availablePool = document.getElementById('availablePool');
-            const assignedPool = document.getElementById('assignedPool');
-            const emptyPlaceholder = document.getElementById('emptyStatePlaceholder');
-            const saveBtn = document.getElementById('saveAllocationBtn');
             const teacherSelect = document.getElementById('teacherSelect');
+            const checkboxGroup = document.getElementById('subjectCheckboxGroup');
+            const saveBtn = document.getElementById('saveAllocationBtn');
             const statusAlert = document.getElementById('statusAlert');
+            const checkboxes = document.querySelectorAll('.subject-checkbox');
 
-            // 1. Toggling items back and forth between lists via event delegation
-            document.body.addEventListener('click', (e) => {
-                const card = e.target.closest('.subject-card');
-                if (!card) return;
-
-                const parentPool = card.parentElement.id;
-
-                if (parentPool === 'availablePool') {
-                    // Move to assigned column
-                    card.querySelector('span').innerHTML = '&times;'; // Change arrow to delete symbol
-                    card.querySelector('span').className = 'text-red-500 font-bold text-lg';
-                    assignedPool.appendChild(card);
-                } else {
-                    // Move back to available column
-                    card.querySelector('span').innerHTML = '&rarr;'; // Restore arrow symbol
-                    card.querySelector('span').className = 'text-blue-500 font-bold text-lg';
-                    availablePool.appendChild(card);
-                }
-
-                togglePlaceholder();
-            });
-
-            // 2. Manage visual placeholder when right side is empty
-            function togglePlaceholder() {
-                const assignedItems = assignedPool.querySelectorAll('.subject-card');
-                if (assignedItems.length > 0) {
-                    emptyPlaceholder.classList.add('hidden');
-                } else {
-                    emptyPlaceholder.classList.remove('hidden');
-                }
-            }
-
-            // 3. Collect active allocation array data on Save
-            saveBtn.addEventListener('click', () => {
-                const teacherId = teacherSelect.value;
+            // Simulated Teacher Pre-assigned Data Mockup
+            const TeacherAssignments = {
                 
+            };
+
+            // Listen for teacher selection to automatically check/uncheck items
+            teacherSelect.addEventListener('change', (e) => {
+                const teacherId = e.target.value;
+                statusAlert.classList.add('hidden'); // Hide old messages
+
                 if (!teacherId) {
-                    showAlert('Please select a teacher before saving assignments.', false);
+                    // Reset all checkboxes if no teacher is selected
+                    checkboxes.forEach(cb => cb.checked = false);
+                    saveBtn.disabled = true;
                     return;
                 }
 
-                // Gather subject IDs from the cards currently inside the assigned column
-                const assignedCards = assignedPool.querySelectorAll('.subject-card');
-                const assignedSubjectIds = Array.from(assignedCards).map(card => card.getAttribute('data-id'));
+                // Enable the save button
+                saveBtn.disabled = false;
 
-                console.log(`Payload for Teacher [${teacherId}]:`, assignedSubjectIds);
+                // Load assignments for this teacher from our mock data loop
+                const subjectsSelected = []
+                checkBoxes.forEach(item=>{
+                    subjectsSelected.push(item.value);
+                })
                 
-                showAlert(`Successfully assigned ${assignedSubjectIds.length} subject(s) to the teacher! Check database schema logic.`, true);
+                checkboxes.forEach((cb) => {
+                    cb.checked = assignedIds.includes(cb.value);
+                });
             });
 
-            function showAlert(msg, isSuccess) {
-                statusAlert.textContent = msg;
-                statusAlert.className = `p-4 text-sm rounded-lg ${isSuccess ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
+            // Handle Save Button Clicks
+            saveBtn.addEventListener('click', () => {
+                const teacherId = teacherSelect.value;
+
+                // Collect values of all checked boxes
+
+                // const selectedSubjectIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+                // Update our local mock state
+                TeacherAssignments[teacherId] = subjectsSelected;
+
+                // Show visual confirmation alert
+                statusAlert.textContent = `Successfully updated assignments for ${teacherName}! Assigned codes: [${selectedSubjectIds.join(', ')}]`;
+                statusAlert.className = "p-4 text-sm rounded-lg bg-green-100 text-green-700";
                 statusAlert.classList.remove('hidden');
-            }
+            });
         });
