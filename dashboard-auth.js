@@ -64,3 +64,11 @@ document.getElementById("logout-btn").addEventListener("click", async ()=>{
         console.error("Error during logout process:", error.message);
     }
 });
+
+window.addEventListener('pageshow', function (event) {
+    // event.persisted is true if the page was loaded from the browser's cache (Back Button)
+    if (event.persisted) {
+        // Force a hard reload from the server, which will trigger your Auth check
+        window.location.reload();
+    }
+});
