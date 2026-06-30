@@ -159,7 +159,7 @@ async function loadSubjects(userId) {
         //option.className = 'flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50/40 select-none transition space-x-3';
 
         // 3. Inject the inner HTML structure safely
-        subjectSelect.appendChild(option);
+        subjectsSelect.appendChild(option);
 
       
         // checkBoxContainer.appendChild(label);
