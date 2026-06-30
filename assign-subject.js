@@ -78,9 +78,10 @@ async function loadSubjects() {
       alert("no data available");
       return;
     }
-
+    let subjectData;
     querySnapshot.forEach((doc) => {
-      const subjectData = doc.data();
+      subjectData = doc.data();
+      console.log(subject.data);
       // 1. Create the outer label element
       const label = document.createElement('label');
 
