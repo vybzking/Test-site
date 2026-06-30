@@ -136,10 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Load assignments for this teacher from our mock data loop
                 
                 const selections = Array.from(checkedBoxes).map(cb => cb.value);
-                
-                // checkboxes.forEach((cb) => {
-                //     cb.checked = assignedIds.includes(cb.value);
-                // });
+                console.log("data from checkbox: ", selections);
+                checkboxes.forEach((cb) => {
+                    cb.checked = assignedIds.includes(cb.value);
+                });
             });
 
             // Handle Save Button Clicks
