@@ -1,6 +1,6 @@
 
 import {auth, db} from "./config.js";
-import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const teacherSelect = document.getElementById('teacherSelect');
@@ -156,6 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Update our local mock state
                 TeacherAssignments[teacherId] = selections;
+
+                await updateDoc(doc(db, "users", teacherId), {
+                 "subjects": selections
+                });
 
                 // Show visual confirmation alert
                 statusAlert.textContent = `Successfully updated assignments for ${teacherId}! Assigned codes: [${selections.join(', ')}]`;
