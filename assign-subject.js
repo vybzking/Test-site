@@ -90,7 +90,7 @@ async function loadSubjects() {
 
       // 3. Inject the inner HTML structure safely
       label.innerHTML = `
-      <input type="checkbox" value="${subjectData.uid}" class="subject-checkbox w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+      <input type="checkbox" value="${subjectData.code}" class="subject-checkbox w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
       <div class="text-sm">
         <p class="font-semibold text-gray-800">${subjectData.name}</p>
         <p class="text-xs text-gray-500">${subjectData.code}</p>
