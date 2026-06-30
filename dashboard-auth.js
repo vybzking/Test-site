@@ -47,7 +47,9 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-async function handleLogOut(){
+
+
+document.getElementById("logout-btn").addEventListener("click", async ()=>{
     try {
         // Step A: Detach active Firestore listeners first to avoid permission errors
 
@@ -61,6 +63,4 @@ async function handleLogOut(){
     } catch (error) {
         console.error("Error during logout process:", error.message);
     }
-}
-
-document.getElementById("logout-btn").addEventListener("click", await handleLogout());
+});
