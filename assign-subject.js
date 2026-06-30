@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Handle Save Button Clicks
             saveBtn.addEventListener('click', async() => {
                 const checkboxes = document.querySelectorAll('.subject-checkbox');
-                const selections = Array.from(checkboxes).map(cb => cb.value);
+                const selections = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
                 console.log("data from checkbox: ", selections);
                 const teacherId = teacherSelect.value;
 
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // const selectedSubjectIds = Array.from(checkedBoxes).map(cb => cb.value);
 
                 // Update our local mock state
-                TeacherAssignments[teacherId] = selections;
+                // TeacherAssignments[teacherId] = selections;
 
                 await updateDoc(doc(db, "users", teacherId), {
                  "subjects": selections
