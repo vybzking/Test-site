@@ -145,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Handle Save Button Clicks
             saveBtn.addEventListener('click', async() => {
-                const currentCheckboxes = document.querySelectorAll('.subject-checkbox');
+                const currentCheckboxes = document.querySelectorAll('.subject-checkbox:checked');
                 console.log("Found checkboxes on click:", currentCheckboxes.length);
 
                  // Filter and map
-                 const selections = Array.from(currentCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+                 const selections = Array.from(currentCheckboxes).map(cb => cb.value);
                  const teacherId = teacherSelect.value;
 
                 // Collect values of all checked boxes
