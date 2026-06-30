@@ -65,7 +65,7 @@ async function loadActiveTeachers() {
 
 
 async function loadSubjects() {
-  const checkBoxContainer = document.getElementById("subjectCheckboxGroup");
+  const checkBoxContainer = document.getElementById("checkBoxContainer");
   try {
     const usersRef = collection(db, "subjects");
     
@@ -82,13 +82,13 @@ async function loadSubjects() {
     querySnapshot.forEach((doc) => {
       const subjectData = doc.data();
       // 1. Create the outer label element
-      const checkBox = document.createElement('label');
+      const label = document.createElement('label');
 
       // 2. Apply classes and attributes to the root element
-      checkBox.className = 'flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50/40 select-none transition space-x-3';
+      label.className = 'flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-blue-50/40 select-none transition space-x-3';
 
       // 3. Inject the inner HTML structure safely
-      checkBox.innerHTML = `
+      label.innerHTML = `
       <input type="checkbox" value="${subjectData.uid}" class="subject-checkbox w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
       <div class="text-sm">
         <p class="font-semibold text-gray-800">${subjectData.name}</p>
@@ -97,7 +97,7 @@ async function loadSubjects() {
     `;
 
       
-      checkBoxContainer.appendChild(checkBox);
+      checkBoxContainer.appendChild(label);
     });
 
   } catch (error) {
