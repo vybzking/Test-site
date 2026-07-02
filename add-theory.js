@@ -148,6 +148,7 @@ onAuthStateChanged(auth, async (user) => {
         );
 
         const data = await response.json();
+        console.log(data);
 
         if (!data.secure_url) {
           throw new Error("Cloudinary upload failed");
