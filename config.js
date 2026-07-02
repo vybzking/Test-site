@@ -13,7 +13,7 @@ const firebaseConfig = {
   measurementId: "G-N9QJPYSGQM"
 };
 export const cloudinaryConfig = {
-  "assignmentURI": "https://api.cloudinary.com/v1_1/depjgcf5s/documents/assignment",
+  "assignmentURI": "https://api.cloudinary.com/v1_1/depjgcf5s/auto/upload",
   "uploadPreset": "unsigned_preset"
 }
   
