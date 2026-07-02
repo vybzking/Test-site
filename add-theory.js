@@ -138,7 +138,7 @@ onAuthStateChanged(auth, async (user) => {
         formData.append("file", file);
         formData.append("upload_preset", cloudinaryConfig.uploadPreset);
         formData.append("folder", "documents/assignments");
-        console.log(formData);
+        console.log(formData.entries());
         const response = await fetch(
           cloudinaryConfig.URI,
           {
