@@ -131,6 +131,27 @@ onAuthStateChanged(auth, async (user) => {
                "date": serverTimestamp(),
              });
            }
+
+         
+          for (const file of files) {
+
+              const formData = new FormData();
+
+              formData.append("file", file);
+              formData.append("upload_preset", "myPreset");
+
+              const response = await fetch(
+                `https://api.cloudinary.com/v1_1/depjgcf5s/documents/assignment/upload`,
+                  {
+                    method: "POST",
+                    body: formData
+                  }
+                );
+
+              const data = await response.json();
+
+              console.log(data.secure_url);
+            }  
           
 
           console.log("Document successfully written with ID: ", docRef.id);
