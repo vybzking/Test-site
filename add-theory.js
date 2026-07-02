@@ -75,6 +75,8 @@ onAuthStateChanged(auth, async (user) => {
     // 3. Handling Form Submission (Extracting data for Firebase)
 
     input.addEventListener("change", () => {
+      
+      const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
       const input = document.getElementById("files");
       const files = input.files;
 
@@ -93,6 +95,12 @@ onAuthStateChanged(auth, async (user) => {
             input.value = ""; // reset selection
             return;
         }
+
+        if (file.size > MAX_SIZE) {
+            alert("A single file must exist 2MB");
+            fileInput.value = ""; // Clear the selected file
+            return;
+    }
 
         console.log("Valid file:", file.name);
     }
