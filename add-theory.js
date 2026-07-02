@@ -112,8 +112,7 @@ onAuthStateChanged(auth, async (user) => {
         const questions = document.querySelectorAll('input[name="questions[]"]');
         
 
-    
-});
+  
         // Loop through inputs and pair them up into objects
         
         const questionsExtract = Array.from(questions).map(question=>question.value);
@@ -177,7 +176,6 @@ onAuthStateChanged(auth, async (user) => {
         // Next step: Loop through 'rosterData' and pass to your Firebase addDoc() function
         });
     
-});
 
     
     
