@@ -73,12 +73,39 @@ onAuthStateChanged(auth, async (user) => {
     });
 
     // 3. Handling Form Submission (Extracting data for Firebase)
+
+    input.addEventListener("change", () => {
+      const input = document.getElementById("files");
+      const files = input.files;
+
+      if (files.length > 3){
+        alert("You can only upload maximum of 3 files.");
+        return;
+      } 
+
+      for (let file of files) {
+
+        const isPDF = file.type === "application/pdf";
+        const isDocx = file.name.endsWith(".docx");
+
+        if (!isPDF && !isDocx) {
+            alert(`${file.name} is not allowed`);
+            input.value = ""; // reset selection
+            return;
+        }
+
+        console.log("Valid file:", file.name);
+    }
+      
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         // Target all generated input arrays
         const questions = document.querySelectorAll('input[name="questions[]"]');
+        
 
+    
+});
         // Loop through inputs and pair them up into objects
         
         const questionsExtract = Array.from(questions).map(question=>question.value);
@@ -169,6 +196,7 @@ async function loadSubjects(userId) {
     console.error("Error fetching subjects:", error);
   }
 }
+
 
 
 
