@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 export const cloudinaryConfig = {
   "URI": "https://api.cloudinary.com/v1_1/depjgcf5s/auto/upload",
-  "uploadPreset": "unsigned_upload"
+  "uploadPreset": "ml_default"
 }
   
 export const app = initializeApp(firebaseConfig);
