@@ -1,4 +1,4 @@
-import { auth, db } from "./config.js";
+import { auth, db, cloudinaryConfig } from "./config.js";
 import {
   collection, 
   query, 
@@ -138,10 +138,10 @@ onAuthStateChanged(auth, async (user) => {
               const formData = new FormData();
 
               formData.append("file", file);
-              formData.append("upload_preset", "myPreset");
+              formData.append("upload_preset", "unsigned_preset");
 
               const response = await fetch(
-                `https://api.cloudinary.com/v1_1/depjgcf5s/documents/assignment/upload`,
+               cloudinaryConfig.assignmentURI,
                   {
                     method: "POST",
                     body: formData
