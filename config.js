@@ -12,7 +12,7 @@ const firebaseConfig = {
   appId: "1:453484633595:web:2cc944c931387521fdff5e",
   measurementId: "G-N9QJPYSGQM"
 };
-const cloudinaryConfig{
+const cloudinaryConfig = {
   "assignmentURI": "https://api.cloudinary.com/v1_1/depjgcf5s/documents/assignment"
 }
   
