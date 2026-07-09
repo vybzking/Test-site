@@ -17,8 +17,7 @@ import {
 const subjectField = document.getElementById('subject-field');
 const levelField = document.getElementById('level-field');
 const assessmentTypeField = document.getElementById('assessment-type-field');
-
-let selectedFiles = [];
+const assignment_title = document.getElementById("assignment-title");
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -34,57 +33,17 @@ onAuthStateChanged(auth, async (user) => {
 
   await loadSubjects(user.uid);
 
-  const container = document.getElementById('dynamic-fields-container');
-  const addBtn = document.getElementById('add-field-btn');
+  // const container = document.getElementById('dynamic-fields-container');
+  // const addBtn = document.getElementById('add-field-btn');
   const form = document.getElementById('assignment-form');
   const fileInput = document.getElementById("files");
-
-  let questionNum = 2;
-
-  // Add question fields
-  addBtn?.addEventListener('click', () => {
-    const newRow = document.createElement('div');
-    newRow.classList.add('file-div');
-
-    newRow.innerHTML = `
-      <div class="file-div">
-        <label for="file">Upload a file (Max. 2MB) per file</label>
-        <input type="file" id="files" accept=".docx,.pdf" multiple>
-      </div>
-    `;
-    container.appendChild(newRow);
-  });
-
-  // Remove fields
-  container?.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-btn')) {
-      const rows = container.querySelectorAll('.form-row');
-
-      if (rows.length > 1) {
-        e.target.parentElement.remove();
-      } else {
-        alert("You must keep at least one field.");
-      }
-    }
-  });
 
   // File validation
   fileInput?.addEventListener("change", () => {
     const MAX_SIZE = 2 * 1024 * 1024; // 2MB
-    const files = fileInput.files;
-
-    selectedFiles = [];
-
-    if (files.length > 3) {
-      alert("Maximum 3 files allowed.");
-      fileInput.value = "";
-      return;
-    }
-
-    for (const file of files) {
-      const isPDF = file.type === "application/pdf";
-      const isDocx =
-        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+    const file  = fileInput.files[0];
+    const isPDF = file.type === "application/pdf";
+    const isDocx = file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
         file.name.endsWith(".doc") ||
         file.name.endsWith(".docx");
 
@@ -99,39 +58,19 @@ onAuthStateChanged(auth, async (user) => {
         fileInput.value = "";
         return;
       }
-
-      selectedFiles.push(file);
     }
 
-    console.log("Files validated:", selectedFiles.length);
+    // console.log("Files validated:", selectedFiles.length);
   });
 
   // Submit form
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const questionsExtract = Array.from(
-      document.querySelectorAll('input[name="questions[]"]')
-    ).map(q => q.value);
-
+    
     try {
-      // Save questions
-      for (let i = 0; i < questionsExtract.length; i++) {
-        await addDoc(collection(db, "questions"), {
-          question_number: i + 1,
-          question: questionsExtract[i],
-          subject: subjectField?.value || "",
-          level: levelField?.value || "",
-          teacher: user.uid,
-          assessment_type: assessmentTypeField?.value || "",
-          created_at: serverTimestamp()
-        });
-      }
-
+      
       // Upload files to Cloudinary
-      const uploadResults = [];
 
-      for (const file of selectedFiles) {
         const formData = new FormData();
 
         formData.append("file", file);
@@ -153,29 +92,33 @@ onAuthStateChanged(auth, async (user) => {
           throw new Error("Cloudinary upload failed");
         }
 
-        uploadResults.push({
-          url: data.secure_url,
-          public_id: data.public_id,
-          format: data.format
+        // uploadResults.push({
+        //   url: data.secure_url,
+        //   public_id: data.public_id,
+        //   format: data.format
+        // });
+
+        await addDoc(collection(db, "questions"), {
+          assignment_title: assignment_title,
+          questionURI: data.secure_url,
+          subject: subjectField?.value || "",
+          level: levelField?.value || "",
+          teacher: user.uid,
+          assessment_type: assessmentTypeField?.value || "",
+          created_at: serverTimestamp()
         });
 
         console.log("Uploaded:", data.secure_url);
-      }
 
-      console.log("All uploads:", uploadResults);
+        alert("Saved successfully!");
 
-      alert("Saved successfully!");
-
-      form.reset();
-      selectedFiles = [];
+        form.reset();
 
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to save data.");
     }
   });
-});
-
 
 // Load subjects
 async function loadSubjects(userId) {
