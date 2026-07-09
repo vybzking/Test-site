@@ -44,15 +44,14 @@ onAuthStateChanged(auth, async (user) => {
   // Add question fields
   addBtn?.addEventListener('click', () => {
     const newRow = document.createElement('div');
-    newRow.classList.add('form-row');
+    newRow.classList.add('file-div');
 
     newRow.innerHTML = `
-      <span>${questionNum}.</span>
-      <input type="text" name="questions[]" placeholder="Question" required>
-      <button type="button" class="remove-btn">×</button>
+      <div class="file-div">
+        <label for="file">Upload a file (Max. 2MB) per file</label>
+        <input type="file" id="files" accept=".docx,.pdf" multiple>
+      </div>
     `;
-
-    questionNum++;
     container.appendChild(newRow);
   });
 
