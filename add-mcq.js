@@ -12,6 +12,16 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      console.log("No token found. Redirecting...");
+      if (!window.location.pathname.includes("index.html")) {
+        window.location.href = "index.html";
+      }
+      return;
+    }
+
+
     const romanNumerals = ["i", "ii", "iii", "iv", "v", "vi", "vii"];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -169,8 +179,11 @@ import {
           examPayload.push(questionData);
         });
 
+        await addDoc(collection(db, "questions"), examPayload);
+
         console.log("Dynamically Tailored Firestore Array Payload:", examPayload);
         
         alert("Success! Check your browser inspect console to see the customized mixed-mode JSON payload mapping.");
       });
     });
+});
