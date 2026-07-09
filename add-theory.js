@@ -98,7 +98,7 @@ onAuthStateChanged(auth, async (user) => {
       // FIX: Process saving payload directly within the conditional logic path
       await addDoc(collection(db, "questions"), {
         assignment_title: assignment_title?.value || "", // FIX: Saves string, not HTML node
-        questionURI: data.secure_url,
+        questionURI: data.public_id,
         subject: subjectField?.value || "",
         level: levelField?.value || "",
         teacher: user.uid,
