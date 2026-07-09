@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         questions: examPayload
       };
 
-      await addDoc(collection(db, "exams"), examDocument);
+      await addDoc(collection(db, "questions"), examDocument);
 
       console.log("Successfully compiled and saved document package:", examDocument);
       alert("Success! Exam saved to Firestore.");
