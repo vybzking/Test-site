@@ -88,17 +88,14 @@ onAuthStateChanged(auth, async (user) => {
         const data = await response.json();
         console.log(data);
 
+        
+
         if (!data.secure_url) {
           throw new Error("Cloudinary upload failed");
         }
 
-        // uploadResults.push({
-        //   url: data.secure_url,
-        //   public_id: data.public_id,
-        //   format: data.format
-        // });
-
-        await addDoc(collection(db, "questions"), {
+        else{
+          await addDoc(collection(db, "questions"), {
           assignment_title: assignment_title,
           questionURI: data.secure_url,
           subject: subjectField?.value || "",
@@ -113,6 +110,15 @@ onAuthStateChanged(auth, async (user) => {
         alert("Saved successfully!");
 
         form.reset();
+        }
+
+        // uploadResults.push({
+        //   url: data.secure_url,
+        //   public_id: data.public_id,
+        //   format: data.format
+        // });
+
+        
 
     } catch (error) {
       console.error("Error:", error);
