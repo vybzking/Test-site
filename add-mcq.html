@@ -1,1 +1,405 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic MCQ Test Builder</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 750px;
+    }
+
+    .header-card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .header-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    /* Question Block Wrapper Card */
+    .question-block {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 12px;
+    }
+
+    .question-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--primary);
+    }
+
+    /* Option Row Elements */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Radio button style mapping */
+    .correct-radio {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+      transition: all 0.2s;
+    }
+
+    .correct-radio:checked {
+      border-color: var(--success);
+      background-color: var(--success);
+    }
+
+    .correct-radio:checked::before {
+      content: "\f00c";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      color: white;
+      font-size: 0.75rem;
+    }
+
+    /* Inputs fields formatting */
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+    }
+
+    .question-input {
+      font-weight: 500;
+      margin-bottom: 16px;
+      background-color: #fafafa;
+    }
+
+    /* Functional Controls Buttons */
+    .btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+    }
+    .btn-danger:hover {
+      background: #fee2e2;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .action-bar {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .btn-add-q {
+      flex: 1;
+      background: transparent;
+      border: 2px dashed var(--border);
+      padding: 16px;
+      font-size: 1rem;
+      border-radius: var(--radius);
+      justify-content: center;
+    }
+    .btn-add-q:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: #f5f3ff;
+    }
+
+    .btn-submit {
+      background: var(--primary);
+      color: white;
+      padding: 16px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: var(--radius);
+    }
+    .btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-card">
+      <h2>MCQ Assessment Sheet Builder</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Type your questions below. Mark the radio circle next to the choice that represents the **correct answer**.</p>
+    </div>
+
+    <form id="mcq-form">
+      <div id="quiz-wrapper">
+        <!-- Question Item Card Template Component -->
+        <div class="question-block" data-question-id="1">
+          <div class="question-header">
+            <span class="question-title">Question 1</span>
+            <button type="button" class="btn btn-danger delete-q-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+          </div>
+          
+          <input type="text" class="question-input" placeholder="Type the question prompt here..." required>
+          
+          <div class="options-list">
+            <!-- Default Options Setup (A, B, C, D) -->
+            <div class="option-row">
+              <input type="radio" name="correct-ans-1" class="correct-radio" title="Mark as correct answer" checked required>
+              <input type="text" class="option-input" placeholder="Option A" required>
+              <button type="button" class="btn btn-danger remove-opt-btn" title="Remove Option">&times;</button>
+            </div>
+            <div class="option-row">
+              <input type="radio" name="correct-ans-1" class="correct-radio" title="Mark as correct answer">
+              <input type="text" class="option-input" placeholder="Option B" required>
+              <button type="button" class="btn btn-danger remove-opt-btn" title="Remove Option">&times;</button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-secondary add-opt-btn"><i class="fa-solid fa-plus"></i> Add Option</button>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button type="button" id="add-question-btn" class="btn btn-add-q">
+          <i class="fa-solid fa-folder-plus"></i> Add Another Question
+        </button>
+        <button type="submit" class="btn btn-submit">Save MCQ Test Set</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const quizWrapper = document.getElementById('quiz-wrapper');
+      const addQuestionBtn = document.getElementById('add-question-btn');
+      const mcqForm = document.getElementById('mcq-form');
+
+      let questionCounter = 1;
+
+      // 1. Add New Dynamic Question Card Block
+      addQuestionBtn.addEventListener('click', () => {
+        questionCounter++;
+        
+        const qBlock = document.createElement('div');
+        qBlock.classList.add('question-block');
+        qBlock.setAttribute('data-question-id', questionCounter);
+
+        qBlock.innerHTML = `
+          <div class="question-header">
+            <span class="question-title">Question ${questionCounter}</span>
+            <button type="button" class="btn btn-danger delete-q-btn"><i class="fa-solid fa-trash-can"></i> Remove</button>
+          </div>
+          <input type="text" class="question-input" placeholder="Type the question prompt here..." required>
+          <div class="options-list">
+            <div class="option-row">
+              <input type="radio" name="correct-ans-${questionCounter}" class="correct-radio" title="Mark as correct answer" checked required>
+              <input type="text" class="option-input" placeholder="Option A" required>
+              <button type="button" class="btn btn-danger remove-opt-btn" title="Remove Option">&times;</button>
+            </div>
+            <div class="option-row">
+              <input type="radio" name="correct-ans-${questionCounter}" class="correct-radio" title="Mark as correct answer">
+              <input type="text" class="option-input" placeholder="Option B" required>
+              <button type="button" class="btn btn-danger remove-opt-btn" title="Remove Option">&times;</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary add-opt-btn"><i class="fa-solid fa-plus"></i> Add Option</button>
+        `;
+
+        quizWrapper.appendChild(qBlock);
+        reindexItems();
+      });
+
+      // 2. Event Delegation for Nested Dynamic Option/Question Actions
+      quizWrapper.addEventListener('click', (e) => {
+        const target = e.target;
+
+        // Add Option Item Row Inside specific Question Card Context
+        if (target.closest('.add-opt-btn')) {
+          const qBlock = target.closest('.question-block');
+          const optionsList = qBlock.querySelector('.options-list');
+          const qId = qBlock.getAttribute('data-question-id');
+          
+          const optRow = document.createElement('div');
+          optRow.classList.add('option-row');
+          optRow.innerHTML = `
+            <input type="radio" name="correct-ans-${qId}" class="correct-radio" title="Mark as correct answer">
+            <input type="text" class="option-input" placeholder="New Option" required>
+            <button type="button" class="btn btn-danger remove-opt-btn" title="Remove Option">&times;</button>
+          `;
+          optionsList.appendChild(optRow);
+        }
+
+        // Delete Row Option Input element 
+        if (target.closest('.remove-opt-btn')) {
+          const row = target.closest('.option-row');
+          const list = target.closest('.options-list');
+          if (list.querySelectorAll('.option-row').length > 2) {
+            // If the deleted option was checked, move the checked status to the first item remaining
+            const wasChecked = row.querySelector('.correct-radio').checked;
+            row.remove();
+            if (wasChecked) {
+              list.querySelector('.correct-radio').checked = true;
+            }
+          } else {
+            alert("An MCQ question requires at least 2 choice options.");
+          }
+        }
+
+        // Delete entire Question Block card component
+        if (target.closest('.delete-q-btn')) {
+          const blocks = quizWrapper.querySelectorAll('.question-block');
+          if (blocks.length > 1) {
+            target.closest('.question-block').remove();
+            reindexItems();
+          } else {
+            alert("Your assessment needs to contain at least 1 question item.");
+          }
+        }
+      });
+
+      // 3. Dynamic Structural Synchronization Layout Index Re-aligner
+      function reindexItems() {
+        const blocks = quizWrapper.querySelectorAll('.question-block');
+        blocks.forEach((block, qIdx) => {
+          const displayNum = qIdx + 1;
+          block.setAttribute('data-question-id', displayNum);
+          block.querySelector('.question-title').textContent = `Question ${displayNum}`;
+          
+          // Re-index the radio group names so they don't leak overlap data scopes
+          block.querySelectorAll('.correct-radio').forEach(radio => {
+            radio.setAttribute('name', `correct-ans-${displayNum}`);
+          });
+        });
+      }
+
+      // 4. Data Parsing Submit Engine
+      mcqForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const serializedDataArray = [];
+        const blocks = quizWrapper.querySelectorAll('.question-block');
+
+        blocks.forEach((block, index) => {
+          const questionText = block.querySelector('.question-input').value;
+          const optionRows = block.querySelectorAll('.option-row');
+          
+          const options = [];
+          let correctAnswerIndex = 0;
+
+          optionRows.forEach((row, optIdx) => {
+            const optionText = row.querySelector('.option-input').value;
+            const isCorrect = row.querySelector('.correct-radio').checked;
+
+            options.push(optionText);
+            if (isCorrect) {
+              correctAnswerIndex = optIdx; // Save index placement map (0 = A, 1 = B...)
+            }
+          });
+
+          serializedDataArray.push({
+            question_number: index + 1,
+            question_text: questionText,
+            options: options,
+            correct_answer_index: correctAnswerIndex
+          });
+        });
+
+        console.log("Ready for Firestore Payload Array:", serializedDataArray);
+        alert("Check console output! Data structure parsed cleanly.");
+        
+        // This 'serializedDataArray' variable can now be saved directly into a Firestore 
+        // document parameter map key: await addDoc(collection(db, "exams"), { questions: serializedDataArray });
+      });
+    });
+  </script>
+</body>
+</html>
